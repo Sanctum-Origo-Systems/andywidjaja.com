@@ -1,17 +1,74 @@
 ---
 import '../styles/global.css';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LiveStat from '../components/LiveStat.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 ---
 
-<html lang="en" class="dark">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Andy Widjaja</title>
-	</head>
-	<body class="bg-bg text-text-primary font-sans">
-		<h1 class="font-mono">Andy Widjaja</h1>
-	</body>
-</html>
+<Base title="Andy Widjaja">
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-6">
+    <!-- Hero -->
+    <section class="py-20 text-center">
+      <h1 class="text-2xl md:text-4xl font-semibold leading-tight mb-8">
+        I build AI systems that improve themselves under human oversight.
+      </h1>
+      <LiveStat />
+      <p class="mt-6 text-text-secondary text-sm">
+        Engineering leader shipping large-scale systems globally.
+      </p>
+      <a
+        href="https://www.linkedin.com/in/andy-widjaja-aws/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-2 inline-block text-accent hover:underline text-sm"
+      >
+        LinkedIn &rarr;
+      </a>
+    </section>
+
+    <!-- Projects -->
+    <div class="space-y-16 pb-16">
+      <ProjectCard
+        title="Patina"
+        description="Cognitive AI that learns your judgment over time"
+        href="/patina"
+        repoUrl="https://github.com/Sanctum-Origo-Systems/patina"
+      >
+        <div class="bg-surface border border-border rounded-md p-4 mb-6 overflow-x-auto">
+          <img src="/patina-arch-light.svg" alt="Patina architecture: observer, builder, human gate" class="w-full dark:hidden" />
+          <img src="/patina-arch-dark.svg" alt="Patina architecture: observer, builder, human gate" class="w-full hidden dark:block" />
+        </div>
+        <ul class="space-y-2 text-text-secondary text-sm font-mono">
+          <li>&#x2022; Belief graph with contradiction detection</li>
+          <li>&#x2022; Self-improvement loop (metrics-driven)</li>
+          <li>&#x2022; Bounded autonomy: human merge gate</li>
+          <li>&#x2022; 31 MCP tools &middot; 973 tests &middot; running in prod</li>
+        </ul>
+      </ProjectCard>
+
+      <ProjectCard
+        title="Autoloop"
+        description="Governed build pipeline for any repo"
+        href="/autoloop"
+        repoUrl="https://github.com/Sanctum-Origo-Systems/patina/tree/main/autoloop"
+      >
+        <div class="bg-surface border border-border rounded-md p-4 mb-6 overflow-x-auto">
+          <img src="/autoloop-flow-light.svg" alt="Autoloop pipeline: triage, decompose, implement, verify, PR" class="w-full dark:hidden" />
+          <img src="/autoloop-flow-dark.svg" alt="Autoloop pipeline: triage, decompose, implement, verify, PR" class="w-full hidden dark:block" />
+        </div>
+        <ul class="space-y-2 text-text-secondary text-sm font-mono">
+          <li>&#x2022; One-command setup: <code class="text-accent">autoloop init</code></li>
+          <li>&#x2022; Serial dispatch + dependency ordering</li>
+          <li>&#x2022; Config-driven: works on any language/toolchain</li>
+          <li>&#x2022; Protected paths: loop can't modify itself</li>
+        </ul>
+      </ProjectCard>
+    </div>
+  </main>
+
+  <Footer />
+</Base>

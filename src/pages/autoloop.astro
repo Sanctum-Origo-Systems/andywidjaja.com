@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Autoloop | Andy Widjaja" description="Governed build pipeline that turns GitHub issues into verified PRs. One-command setup, any language.">
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <div class="flex items-baseline justify-between gap-4 mb-8">
+      <h1 class="text-2xl font-semibold">Autoloop</h1>
+      <a
+        href="https://github.com/Sanctum-Origo-Systems/patina/tree/main/autoloop"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-text-secondary hover:text-accent transition-colors font-mono text-sm"
+      >
+        repo &rarr;
+      </a>
+    </div>
+
+    <!-- Problem -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Problem</h2>
+      <p class="text-text-primary leading-relaxed">
+        I kept running into the same problem: AI coding agents can implement one issue, but
+        they can't reason about the queue. Issue #3 depends on #1 being merged first. Two
+        issues touch the same file and need serial dispatch. Nobody was solving the
+        orchestration layer. So I built Autoloop: a governed pipeline that triages,
+        decomposes, orders, and implements, then hands every PR to a human for the final call.
+      </p>
+    </section>
+
+    <!-- Pipeline Diagram -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Pipeline</h2>
+      <div class="bg-surface border border-border rounded-md p-6 overflow-x-auto">
+        <img src="/autoloop-flow-light.svg" alt="Autoloop pipeline: triage, decompose, implement, verify, PR" class="w-full dark:hidden" />
+        <img src="/autoloop-flow-dark.svg" alt="Autoloop pipeline: triage, decompose, implement, verify, PR" class="w-full hidden dark:block" />
+      </div>
+    </section>
+
+    <!-- Key Features -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Key features</h2>
+      <ul class="space-y-3 text-text-primary">
+        <li class="flex gap-3">
+          <span class="text-accent font-mono text-sm mt-0.5">&bull;</span>
+          <span><strong>Config-driven</strong>: works on any language or toolchain via <code class="font-mono text-accent text-sm">autoloop.toml</code></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-accent font-mono text-sm mt-0.5">&bull;</span>
+          <span><strong>Serial dispatch</strong>: respects dependency ordering, avoids merge conflicts</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-accent font-mono text-sm mt-0.5">&bull;</span>
+          <span><strong>One-command setup</strong>: <code class="font-mono text-accent text-sm">autoloop init</code> on any existing repo</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-accent font-mono text-sm mt-0.5">&bull;</span>
+          <span><strong>Protected paths</strong>: the loop can't modify itself or core infrastructure</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-accent font-mono text-sm mt-0.5">&bull;</span>
+          <span><strong>Human gate</strong>: every PR requires human review before merge</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Terminal Example -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Getting started</h2>
+      <div class="bg-surface border border-border rounded-md p-5 font-mono text-sm overflow-x-auto">
+        <div class="text-text-secondary mb-2">$ python autoloop/init.py \</div>
+        <div class="text-text-secondary pl-6 mb-1">--repo your-org/your-repo \</div>
+        <div class="text-text-secondary pl-6 mb-1">--target ~/Git/your-repo \</div>
+        <div class="text-text-secondary pl-6 mb-1">--reviewer your-github-handle \</div>
+        <div class="text-text-secondary pl-6 mb-4">--verify-cmd "npm run build"</div>
+        <div class="text-success">&#x2713; Created autoloop.toml</div>
+        <div class="text-success">&#x2713; Created .github/workflows/autoloop-cleanup.yml</div>
+        <div class="text-success">&#x2713; Created GitHub labels</div>
+        <div class="text-success">&#x2713; Ready to process issues</div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

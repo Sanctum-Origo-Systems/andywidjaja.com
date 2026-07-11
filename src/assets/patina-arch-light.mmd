@@ -1,0 +1,12 @@
+graph LR
+    Observer["Observer\nbelief graph"]
+    Builder["Builder\nimplements PRs"]
+    Gate["Human Gate\nmerge / reject"]
+
+    Observer -. "air gap" .-> Builder
+    Builder --> Gate
+    Builder -. "self-improvement loop" .-> Observer
+
+    style Observer fill:#f6f8fa,stroke:#0969da,color:#1f2328
+    style Builder fill:#f6f8fa,stroke:#0969da,color:#1f2328
+    style Gate fill:#f6f8fa,stroke:#1a7f37,color:#1f2328

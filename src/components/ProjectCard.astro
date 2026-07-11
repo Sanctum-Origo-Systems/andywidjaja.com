@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  repoUrl: string;
+}
+
+const { title, description, href, repoUrl } = Astro.props;
+---
+
+<section class="border-t border-border pt-10">
+  <div class="flex items-baseline justify-between gap-4 mb-3">
+    <a href={href} class="text-text-primary font-semibold text-xl uppercase tracking-wide hover:text-accent transition-colors">
+      {title}
+    </a>
+    <a
+      href={repoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-text-secondary hover:text-accent transition-colors font-mono text-sm whitespace-nowrap"
+    >
+      repo &rarr;
+    </a>
+  </div>
+  <p class="text-text-secondary mb-6">{description}</p>
+  <slot />
+</section>

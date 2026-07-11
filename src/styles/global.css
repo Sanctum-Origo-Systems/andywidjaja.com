@@ -7,6 +7,18 @@
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-border: #d0d7de;
+  --color-text-primary: #1f2328;
+  --color-text-secondary: #656d76;
+  --color-accent: #0969da;
+  --color-success: #1a7f37;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+.dark {
   --color-bg: #0d1117;
   --color-surface: #161b22;
   --color-border: #30363d;
@@ -14,6 +26,4 @@
   --color-text-secondary: #8b949e;
   --color-accent: #58a6ff;
   --color-success: #3fb950;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
 }

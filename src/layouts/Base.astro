@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "I build AI systems that improve themselves under human oversight." } = Astro.props;
+---
+
+<html lang="en" class="dark">
+  <head>
+    <script is:inline>
+      const theme = localStorage.getItem('theme');
+      if (theme === 'light') document.documentElement.classList.remove('dark');
+      else if (!theme) localStorage.setItem('theme', 'dark');
+    </script>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="bg-bg text-text-primary font-sans min-h-screen antialiased transition-colors duration-200">
+    <slot />
+  </body>
+</html>

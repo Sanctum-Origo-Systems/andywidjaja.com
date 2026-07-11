@@ -1,3 +1,7 @@
+## Workflow
+
+Always create a new feature branch before implementing changes. Never commit directly to main.
+
 ## Development
 
 When starting the dev server, use background mode:
