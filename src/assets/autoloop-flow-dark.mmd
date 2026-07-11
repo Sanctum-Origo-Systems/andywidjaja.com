@@ -1,0 +1,14 @@
+graph LR
+    Triage["Triage\nsize + priority"]
+    Decompose["Decompose\nsubtasks"]
+    Implement["Implement\nclaude code or codex"]
+    Verify["Verify\nbuild + test"]
+    PR["PR\nhuman review"]
+
+    Triage --> Decompose --> Implement --> Verify --> PR
+
+    style Triage fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style Decompose fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style Implement fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style Verify fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style PR fill:#d3d7dd,stroke:#1f882e,color:#1d2328

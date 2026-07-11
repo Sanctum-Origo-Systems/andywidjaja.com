@@ -1,0 +1,94 @@
+---
+import '../styles/global.css';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Patina | Andy Widjaja" description="Cognitive AI that learns your judgment over time. Observer/builder architecture with bounded autonomy.">
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <div class="flex items-baseline justify-between gap-4 mb-8">
+      <h1 class="text-2xl font-semibold">Patina</h1>
+      <a
+        href="https://github.com/Sanctum-Origo-Systems/patina"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-text-secondary hover:text-accent transition-colors font-mono text-sm"
+      >
+        repo &rarr;
+      </a>
+    </div>
+
+    <!-- Problem -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Problem</h2>
+      <p class="text-text-primary leading-relaxed">
+        Every AI conversation starts from zero. The system forgets what you told it
+        yesterday, repeats mistakes you already corrected, and never develops judgment
+        about how <em>you</em> work. I built Patina because I wanted an AI that
+        accumulates understanding: a persistent belief graph of user judgment that
+        compounds over time instead of resetting.
+      </p>
+    </section>
+
+    <!-- Architecture -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Architecture</h2>
+      <div class="bg-surface border border-border rounded-md p-6 overflow-x-auto">
+        <img src="/patina-arch-light.svg" alt="Patina architecture: observer, builder, human gate with self-improvement loop" class="w-full dark:hidden" />
+        <img src="/patina-arch-dark.svg" alt="Patina architecture: observer, builder, human gate with self-improvement loop" class="w-full hidden dark:block" />
+      </div>
+    </section>
+
+    <!-- Key Numbers -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">By the numbers</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-surface border border-border rounded-md p-4 text-center">
+          <div class="text-xl font-semibold text-text-primary">31</div>
+          <div class="text-xs font-mono text-text-secondary mt-1">MCP tools</div>
+        </div>
+        <div class="bg-surface border border-border rounded-md p-4 text-center">
+          <div class="text-xl font-semibold text-text-primary">973</div>
+          <div class="text-xs font-mono text-text-secondary mt-1">tests</div>
+        </div>
+        <div class="bg-surface border border-border rounded-md p-4 text-center">
+          <div class="text-xl font-semibold text-text-primary">30</div>
+          <div class="text-xs font-mono text-text-secondary mt-1">PRs merged</div>
+        </div>
+        <div class="bg-surface border border-border rounded-md p-4 text-center">
+          <div class="text-xs font-mono text-success mt-1">running since</div>
+          <div class="text-lg font-semibold text-text-primary">May 26</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Self-improvement thesis -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Self-improvement thesis</h2>
+      <p class="text-text-primary leading-relaxed">
+        The interesting constraint: how do you let a system improve itself without
+        losing control? Patina tracks which beliefs lead to good outcomes and which
+        get corrected. It proposes changes to its own behavior through the same PR
+        pipeline it uses for everything else, so no self-modification ships without
+        human review. The system gets better, stays safe, and remains interpretable.
+      </p>
+    </section>
+
+    <!-- Novel contribution -->
+    <section class="mb-12">
+      <h2 class="text-xs font-mono text-text-secondary uppercase tracking-wide mb-3">Novel contribution</h2>
+      <p class="text-text-primary leading-relaxed">
+        Most AI agents either do too much unsupervised or too little to be useful.
+        Patina instantiates CAIS principles in a personal cognitive system: the observer
+        and builder are separated by an air gap, the human merge gate bounds autonomy
+        without crippling capability, and the self-improvement loop is governed, not
+        open-ended. It's graduated autonomy as a running system, not a paper.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
