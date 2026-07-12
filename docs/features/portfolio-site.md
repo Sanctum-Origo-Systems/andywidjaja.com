@@ -516,7 +516,7 @@ example, and repo link.
 - Home page shows Autoloop card with title, one-line description, and [repo →] link
 - `/autoloop` page renders with all content sections (problem, diagram, features, init example, link)
 - Terminal code block showing `autoloop init` usage
-- Repo link goes to `https://github.com/Sanctum-Origo-Systems/patina/tree/main/autoloop`
+- Repo link goes to `https://github.com/Sanctum-Origo-Systems/autoloop`
 
 ## Enhancement 5: Add gallery teaser and deploy configuration
 
