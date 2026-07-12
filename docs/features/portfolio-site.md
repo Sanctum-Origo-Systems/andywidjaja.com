@@ -228,7 +228,9 @@ Autoloop cannot modify:
 
 ## Resolved Questions
 
-- **Domain:** Use existing personal domain (already associated with your name)
+- **Domain:** andywidjaja.com (Route 53 DNS, Vercel hosting)
+- **Deployment:** Live at https://andywidjaja.com (deployed 2026-07-11). Auto-deploys on push to main via Vercel.
+- **HTTPS:** Automatic via Vercel. HSTS enabled. www redirects to apex.
 - **Identity:** Personal brand (Andy Widjaja) — you're selling *you*, not just Patina
 - **Scope:** Portfolio + projects now. Blog/essays after the paper lands (Q4)
 - **Access:** Fully public for browsing. Auth only for feedback submission (Phase 4)
@@ -441,14 +443,15 @@ site/
 
 ### Acceptance Criteria (Phase 1)
 
-- [ ] Site loads in <1 second (static, no client-side JS required for content)
-- [ ] Dark mode is default, light mode toggle works
-- [ ] Hero shows the thesis + one live stat
-- [ ] Patina section has architecture diagram + repo link
-- [ ] Autoloop section has pipeline diagram + repo link
-- [ ] Mobile responsive (single column, readable)
-- [ ] No Amazon/AWS branding anywhere
-- [ ] Deployed to personal domain
+- [x] Site loads in <1 second (static, no client-side JS required for content)
+- [x] Dark mode is default, light mode toggle works
+- [x] Hero shows thesis + stats row + LinkedIn link
+- [x] Patina section has architecture diagram + repo link
+- [x] Autoloop section has pipeline diagram + repo link
+- [x] Mobile responsive (single column, readable on iOS)
+- [x] No Amazon/AWS branding anywhere
+- [x] Deployed to personal domain (https://andywidjaja.com, 2026-07-11)
+- [x] HTTPS with HSTS, www redirects to apex
 - [ ] Lighthouse score >95 (performance + accessibility)
 
 ---

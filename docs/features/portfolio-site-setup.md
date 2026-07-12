@@ -228,16 +228,17 @@ the scoring and variant-building pipeline autonomously.
 
 Before adding the URL to your resume or outreach messages:
 
-- [ ] Site loads in <1 second
-- [ ] Dark mode renders correctly as default
-- [ ] Hero shows thesis + live stat
-- [ ] Patina page has architecture diagram + repo link
-- [ ] Autoloop page has pipeline diagram + repo link
-- [ ] Mobile responsive (check on phone)
-- [ ] No Amazon/AWS branding anywhere
+- [x] Site loads in <1 second
+- [x] Dark mode renders correctly as default
+- [x] Hero shows thesis + stats row
+- [x] Hero has LinkedIn link
+- [x] Patina page has architecture diagram + repo link
+- [x] Autoloop page has pipeline diagram + repo link
+- [x] Mobile responsive (checked on iOS)
+- [x] No Amazon/AWS branding anywhere
 - [ ] Lighthouse score >95
-- [ ] URL works with and without `www`
-- [ ] SSL certificate valid (no browser warnings)
+- [x] URL works with and without `www`
+- [x] SSL certificate valid (HTTPS + HSTS via Vercel)
 
 Once all checked: add to resume, LinkedIn (profile link only, no post), and
 include in follow-up messages to Sarah/Dan when they respond.
