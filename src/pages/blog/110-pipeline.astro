@@ -9,13 +9,11 @@ import BlogPost from '../../layouts/BlogPost.astro';
   date="2026-07-14"
 >
 
-<p>27 autonomous merges in two weeks. 97% success rate. One failed run out of 42. Average implementation time: 4 minutes per issue.</p>
+<p>I got tired of implementing my own backlog manually using claude code on my laptop. So I set up a loop, let the system triage it, decompose it if it's too big, implement it, run the tests, and open a PR. I do the merge from my phone. It's been running for 2 weeks: 27 merges, 1 failure, with $1.61 average per-issue.</p>
 
-<p>I run a software system that files its own issues, decomposes large tasks into buildable units, implements them with tests, opens PRs, and waits for me to merge. It runs on a $9/month VPS and a Claude subscription. The total infrastructure cost is $110/month. Average cost per implemented issue: $1.61.</p>
+<p>It's been running for 2 weeks. The number will likely change. Now I'm still actively collecting data. I'll update this post as the system matures. But the pattern seems to work well enough that I wanted to share it now rather than wait for a perfect dataset.</p>
 
-<p>This isn't a demo. It's been running in production since July 1, 2026.</p>
-
-<h2>The stack</h2>
+<h2>The cost</h2>
 
 <pre><code>$100.00/month  Claude Max 5x (triage + implementation via Claude Code CLI)
 $  9.99/month  VPS (Hostinger, 2 vCPU, 8GB RAM, Ubuntu)
@@ -23,7 +21,9 @@ $  0.00/month  GitHub
 ─────────
 $109.99/month  Total</code></pre>
 
-<p>The system is called <a href="https://github.com/Sanctum-Origo-Systems/autoloop">autoloop</a>. It's open source. The entire configuration for a repository fits in one file:</p>
+<h2>The config</h2>
+
+<p>The system is <a href="https://github.com/Sanctum-Origo-Systems/autoloop">autoloop</a>. One file that configures the loop:</p>
 
 <pre><code># autoloop.toml
 repo = "your-org/your-repo"
@@ -33,85 +33,79 @@ verify_cmd = "uv run pytest"
 max_retries = 3
 protected_paths = ["autoloop/", "autoloop.toml"]</code></pre>
 
-<p>Three systemd timers. No Kubernetes. No orchestration framework. No queue service.</p>
+<p>Three systemd timers. No Kubernetes. No orchestration framework. No fancy queue service.</p>
 
 <pre><code>OnCalendar=*-*-* 00:00:00 UTC   # triage
 OnCalendar=*-*-* 02:00:00 UTC   # implement
 OnCalendar=*-*-* 04:00:00 UTC   # changelog</code></pre>
 
-<h2>How a feature ships while I sleep</h2>
+<h2>What happens to an issue</h2>
 
 <div class="bg-surface border border-border rounded-md p-4 mb-6 overflow-x-auto">
   <img src="/blog-pipeline-light.svg" alt="Autoloop pipeline: GitHub Issue to Triage to Dependency Graph to Builder to Tests to Pull Request" class="w-full dark:hidden" />
   <img src="/blog-pipeline-dark.svg" alt="Autoloop pipeline: GitHub Issue to Triage to Dependency Graph to Builder to Tests to Pull Request" class="w-full hidden dark:block" />
 </div>
 
-<p>A GitHub issue enters the queue. Here's what happens, unattended:</p>
+<p>A GitHub issue enters the queue. Unattended:</p>
 
-<p><strong>Triage</strong> (Sonnet, ~$0.10): The system reads the issue, validates the template, estimates story points, and assigns priority. If the template is incomplete, it rewrites the issue body to fix it and re-triages.</p>
+<p><strong>Triage</strong> (Sonnet, ~$0.10): Reads the issue, validates it, estimates the story points, and assigns priority. If the issue is too large, it decomposes into sub-issues with dependency ordering and triages each one. It recursively splits until every piece is buildable in one pass and generates a PR small enough for me to review on my phone.</p>
 
-<p>If an issue is too large, the system decomposes it into sub-issues with dependency ordering, files them, and triages each one. This is recursive. A 5-point issue becomes three 2-point issues. If one of those is still too large, it splits again. The system keeps decomposing until every piece is buildable.</p>
+<p><strong>Implement</strong> (Opus, ~$1.50): Picks the top ready issue with respect to dependency ordering, creates a branch, runs Claude with the issue spec and repo context, runs tests and lint, checks that test files were added, and opens a PR.</p>
 
-<p><strong>Implement</strong> (Opus, ~$1.50): The system picks the top ready issue respecting dependency order, creates a branch, invokes Claude with the issue spec and repo context, runs <code>verify_cmd</code> (tests must pass), runs lint, checks that test files were added, and opens a PR.</p>
+<p><strong>Verification gate</strong>: When tests fail or no test files were added, it retries up to 3 times, feeding the errors back to provide context for the next attempt. If all retries fail, it labels the issue <code>needs-human</code> and moves on.</p>
 
-<p><strong>Verification gate</strong>: If tests fail or no test files were added, it retries up to 3 times, feeding the errors back into the next attempt. If all retries fail, it labels the issue <code>needs-human</code> and moves on.</p>
+<p>I review queued PRs on my phone and merge. That's my contribution to the loop. Can PR merge be done automatically? Yes, but it's a deliberate architecture decision for me to be the PR gate.</p>
 
-<p><strong>I review PRs on my phone via Claude Code remote control</strong> (a persistent session running in tmux on the VPS) <strong>and merge.</strong> When the queue is deep, I trigger the next implementation on-demand from the same session. If there's a merge conflict, I resolve it from the phone too. That's my entire contribution to the process.</p>
+<h2>When it breaks</h2>
 
-<h2>When it fails</h2>
+<p><strong>Day 8</strong>. <a href="https://github.com/Sanctum-Origo-Systems/patina/issues/40">Issue #40</a> was a duplicate. It described the issue was already implemented. The system still tried 3 times to produce a change, found nothing to change, failed verification because there was no diff. It labeled the issue <code>needs-human</code> and moved on to the next item in the queue.</p>
 
-<p><a href="https://github.com/Sanctum-Origo-Systems/patina/issues/40">Run #14</a> targeted a GitHub Actions workflow file with assumptions about its structure that didn't match reality. The system retried 3 times, each time failing verification, then labeled the issue <code>needs-human</code> and moved on to the next item in the queue. I reworked the issue, re-labeled it <code>ready</code>, and it succeeded on the next cycle.</p>
+<p>I looked at the issue and read the failure explanation. I closed it. It was the right outcome. A human looks at it, realizes it's a duplicate, closes it. The system couldn't know at the time. It just knew it couldn't produce a valid PR. So it got out of the way.</p>
 
-<p>The system doesn't pretend to be infallible. It fails, labels the failure, and gets out of the way. That's the right behavior.</p>
+<p><strong>Day 12</strong>. <a href="https://github.com/Sanctum-Origo-Systems/patina/issues/159">Issue #159</a> got decomposed into 3 sub-issues. The second sub-issue produced a PR that broke an import path the first PR had introduced. Merge conflict. I fixed it from my phone in the Claude Code remote session (tmux on the VPS). It took me only 4 minutes.</p>
 
-<h2>The constraint that makes it work</h2>
+<p><strong>The pattern:</strong> when it fails, it's almost always because my issue description was ambiguous or assumed context the builder didn't have. Better issues → better PRs. The system exposed my sloppy specs faster than any code review would.</p>
+
+<h2>The constraint that makes it safe</h2>
 
 <p>The system cannot modify itself.</p>
 
 <pre><code>protected_paths = ["autoloop/", "autoloop.toml"]</code></pre>
 
-<p>If an issue targets files under <code>protected_paths</code>, triage routes it to <code>needs-human</code> instead of <code>ready</code>. The builder never touches its own triage logic, implementation pipeline, or configuration. This is checked at both triage (primary gate) and implementation (safety net).</p>
+<p>If an issue targets files under <code>protected_paths</code>, triage routes it to <code>needs-human</code>. The builder never touches its own logic, pipeline, or configuration. This safety check is done at both triage (primary gate) and implementation (safety net).</p>
 
-<p><strong><em>Self-improvement without self-modification.</em></strong> The system improves the <em>product</em>. It cannot improve the <em>process</em>. That boundary is what makes it safe to run unattended.</p>
+<p><strong><em>Self-improvement without self-modification.</em></strong> It improves the <em>product</em>. It cannot improve the <em>process</em>. That boundary is what I believe makes it safe to run unattended.</p>
 
-<h2>What it actually produced</h2>
+<h2>What it built</h2>
 
-<p><a href="https://github.com/Sanctum-Origo-Systems/patina">Patina</a> is a cognitive assistant: 7,200 lines of Python, 9,200 lines of tests, 31 MCP tools, v0.9.0.</p>
+<p><a href="https://github.com/Sanctum-Origo-Systems/patina">Patina</a>: 7,200 lines of Python, 9,200 lines of tests, 31 MCP tools.</p>
 
-<p>I built the initial core architecture interactively with Claude Code. Once the foundation was solid, autoloop took over the backlog. Of the last 40 merged PRs, 27 were implemented autonomously.</p>
+<p>I built the initial core architecture interactively. Once the foundation was solid, autoloop took over the backlog. Of the last 40 merged PRs, 27 were autonomous.</p>
 
-<p>The pipeline itself is 3,500 lines. It was originally embedded in Patina's repo, then <a href="https://github.com/Sanctum-Origo-Systems/autoloop">extracted into a standalone package</a> that can be applied to any repository with one command:</p>
+<p>The pipeline itself is 3,500 lines. It was originally embedded in Patina's repo, then <a href="https://github.com/Sanctum-Origo-Systems/autoloop">extracted into a standalone package</a> that I can apply to my other repositories with one command:</p>
 
 <pre><code>autoloop init --repo your-org/your-repo --verify-cmd "pytest"
 autoloop triage
 autoloop implement</code></pre>
 
-<h2>Boundaries</h2>
+<h2>Where it works and where it doesn't</h2>
 
 <p>I want to be honest about where this applies.</p>
 
-<p><strong>This works for:</strong> solo builders, indie hackers, small teams. Repos where one person holds full context. Non-critical-path systems where a 24-hour fix cycle is acceptable.</p>
+<p><strong>This works for:</strong> solo builders, small teams, repos where one person or one team can hold full context. Non-critical-path systems where a 24-hour fix cycle is acceptable.</p>
 
-<p><strong>This requires caution for:</strong> regulated environments that need stronger human gates. Multi-team codebases that need more than one reviewer. Customer-facing production with SLAs that need rollback mechanisms this setup doesn't provide.</p>
+<p><strong>This doesn't work (yet) for:</strong> regulated environments, multi-team codebases, customer-facing production with SLAs that need rollback mechanisms this setup doesn't provide (yet). The pattern applies at any scale but this implementation assumes one human at the gate.</p>
 
-<p><strong>The principle scales. The implementation doesn't.</strong> A Fortune 500 company shouldn't run this exact setup. But the pattern (observe, decompose, implement, verify, gate) applies at any scale with appropriate controls.</p>
+<p>Two weeks isn't proof of anything long-term. I'll update this post again at 3 and 6 month mark. If it degrades, I'll share my findings. I'm just sharing the pattern, not declaring victory or claiming a solution that can fix all real world use cases.</p>
 
-<h2>The shift</h2>
+<h2>What I learned</h2>
 
-<p>Every platform shift democratized something that previously required scale:</p>
+<p>The bottleneck isn't the model or the infrastructure. It's the issue quality. Vague issues produce bad PRs. Specific issues with clear acceptance criteria and file path hints produce PRs that merge on first review.</p>
 
-<ul>
-<li>"You need a data center." After AWS: No, you don't.</li>
-<li>"You need bank relationships." After Stripe: No, you don't.</li>
-<li>"You need a DevOps team." After Vercel: No, you don't.</li>
-</ul>
-
-<p>This is the same shift for software development itself. Self-improving software is no longer a funded-startup problem. It's a solo-builder problem. The bottleneck isn't compute cost or infrastructure complexity. It's taste, knowing what to build, what constraints to enforce, and when to let the system run.</p>
-
-<p>The tools are available tonight. The only question is what you'd point them at.</p>
+<p>A year ago this required a team. I'm simply amazed today it only requires a VPS and taste in writing issues.</p>
 
 <hr />
 
-<p><em>The code is open source at <a href="https://github.com/Sanctum-Origo-Systems/autoloop">github.com/Sanctum-Origo-Systems/autoloop</a>. I intentionally separated observation from implementation because systems that evaluate themselves should not simultaneously modify themselves. Patina runs as two separated instances: one observes the human operator, the other builds code. That architecture will be in a future post. Next on the roadmap: scaffolding greenfield projects from spec to MVP. <a href="https://andywidjaja.com">andywidjaja.com</a></em></p>
+<p><em>* code: <a href="https://github.com/Sanctum-Origo-Systems/autoloop">github.com/Sanctum-Origo-Systems/autoloop</a>. Next post: I'll explain why the observer and the builder are separate instances.*</em></p>
 
 </BlogPost>
