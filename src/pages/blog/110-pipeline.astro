@@ -9,9 +9,9 @@ import BlogPost from '../../layouts/BlogPost.astro';
   date="2026-07-14"
 >
 
-<p>I run a software system that files its own issues, decomposes large tasks into buildable units, implements them with tests, opens PRs, and waits for me to merge. It runs on a $9/month VPS and a Claude subscription. The total infrastructure cost is $110/month.</p>
+<p>27 autonomous merges in two weeks. 97% success rate. One failed run out of 42. Average implementation time: 4 minutes per issue.</p>
 
-<p>Average cost per implemented issue: $1.61. In the last two weeks, the system has merged 27 issues with a 97% success rate. One failed run out of 42. Average implementation time: 4 minutes.</p>
+<p>I run a software system that files its own issues, decomposes large tasks into buildable units, implements them with tests, opens PRs, and waits for me to merge. It runs on a $9/month VPS and a Claude subscription. The total infrastructure cost is $110/month. Average cost per implemented issue: $1.61.</p>
 
 <p>This isn't a demo. It's been running in production since July 1, 2026.</p>
 
@@ -41,6 +41,11 @@ OnCalendar=*-*-* 04:00:00 UTC   # changelog</code></pre>
 
 <h2>How a feature ships while I sleep</h2>
 
+<div class="bg-surface border border-border rounded-md p-4 mb-6 overflow-x-auto">
+  <img src="/blog-pipeline-light.svg" alt="Autoloop pipeline: GitHub Issue to Triage to Dependency Graph to Builder to Tests to Pull Request" class="w-full dark:hidden" />
+  <img src="/blog-pipeline-dark.svg" alt="Autoloop pipeline: GitHub Issue to Triage to Dependency Graph to Builder to Tests to Pull Request" class="w-full hidden dark:block" />
+</div>
+
 <p>A GitHub issue enters the queue. Here's what happens, unattended:</p>
 
 <p><strong>Triage</strong> (Sonnet, ~$0.10): The system reads the issue, validates the template, estimates story points, and assigns priority. If the template is incomplete, it rewrites the issue body to fix it and re-triages.</p>
@@ -67,7 +72,7 @@ OnCalendar=*-*-* 04:00:00 UTC   # changelog</code></pre>
 
 <p>If an issue targets files under <code>protected_paths</code>, triage routes it to <code>needs-human</code> instead of <code>ready</code>. The builder never touches its own triage logic, implementation pipeline, or configuration. This is checked at both triage (primary gate) and implementation (safety net).</p>
 
-<p>Self-improvement without self-modification. The system improves the <em>product</em>. It cannot improve the <em>process</em>. That boundary is what makes it safe to run unattended.</p>
+<p><strong><em>Self-improvement without self-modification.</em></strong> The system improves the <em>product</em>. It cannot improve the <em>process</em>. That boundary is what makes it safe to run unattended.</p>
 
 <h2>What it actually produced</h2>
 
@@ -107,6 +112,6 @@ autoloop implement</code></pre>
 
 <hr />
 
-<p><em>The code is open source at <a href="https://github.com/Sanctum-Origo-Systems/autoloop">github.com/Sanctum-Origo-Systems/autoloop</a>. Patina runs as two separated instances, one observes the human operator, the other builds code. That architecture will be in a future post. Next on the roadmap: scaffolding greenfield projects from spec to MVP. <a href="https://andywidjaja.com">andywidjaja.com</a></em></p>
+<p><em>The code is open source at <a href="https://github.com/Sanctum-Origo-Systems/autoloop">github.com/Sanctum-Origo-Systems/autoloop</a>. I intentionally separated observation from implementation because systems that evaluate themselves should not simultaneously modify themselves. Patina runs as two separated instances: one observes the human operator, the other builds code. That architecture will be in a future post. Next on the roadmap: scaffolding greenfield projects from spec to MVP. <a href="https://andywidjaja.com">andywidjaja.com</a></em></p>
 
 </BlogPost>

@@ -1,0 +1,16 @@
+graph LR
+    Issue["GitHub Issue"]
+    Triage["Triage\nsize + priority"]
+    Deps["Dependency\nGraph"]
+    Builder["Builder\nclaude code"]
+    Tests["Tests\nverify + lint"]
+    PR["Pull Request\nhuman merge"]
+
+    Issue --> Triage --> Deps --> Builder --> Tests --> PR
+
+    style Issue fill:#d3d7dd,stroke:#d3d3d3,color:#1d2328
+    style Triage fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style Deps fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style Builder fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style Tests fill:#d3d7dd,stroke:#2d70bc,color:#1d2328
+    style PR fill:#d3d7dd,stroke:#1f882e,color:#1d2328
