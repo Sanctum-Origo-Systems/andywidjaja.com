@@ -1,0 +1,37 @@
+---
+import '../../styles/global.css';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const posts = [
+  {
+    title: "The $110/month self-improving pipeline",
+    description: "Self-improving software is no longer a funded-startup problem. It's a solo-builder problem.",
+    href: "/blog/110-pipeline",
+    date: "2026-07-14",
+  },
+];
+---
+
+<Base title="Blog | Andy Widjaja">
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <h1 class="text-2xl font-semibold mb-10">Blog</h1>
+
+    <div class="space-y-8">
+      {posts.map(post => (
+        <a href={post.href} class="block group">
+          <time class="font-mono text-text-secondary text-xs">{post.date}</time>
+          <h2 class="text-lg font-semibold text-text-primary group-hover:text-accent transition-colors mt-1">
+            {post.title}
+          </h2>
+          <p class="text-text-secondary text-sm mt-1">{post.description}</p>
+        </a>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</Base>
