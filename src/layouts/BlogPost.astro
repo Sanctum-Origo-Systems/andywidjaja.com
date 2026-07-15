@@ -1,0 +1,112 @@
+---
+import '../styles/global.css';
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: string;
+}
+
+const { title, description, date } = Astro.props;
+---
+
+<Base title={`${title} | Andy Widjaja`} description={description}>
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <article>
+      <header class="mb-10">
+        <p class="font-mono text-text-secondary text-xs uppercase tracking-wide mb-2">
+          <a href="/blog" class="hover:text-accent transition-colors">&larr; Blog</a>
+        </p>
+        <h1 class="text-2xl md:text-3xl font-semibold leading-tight mb-3">{title}</h1>
+        <time class="font-mono text-text-secondary text-sm" datetime={date}>{date}</time>
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</Base>
+
+<style is:global>
+  .prose p {
+    color: var(--color-text-primary);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+  .prose h2 {
+    color: var(--color-text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .prose a:hover {
+    text-decoration: underline;
+  }
+  .prose strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+  .prose em {
+    font-style: italic;
+  }
+  .prose ul, .prose ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+  .prose li {
+    color: var(--color-text-primary);
+    line-height: 1.75;
+    margin-bottom: 0.25rem;
+  }
+  .prose ul li {
+    list-style-type: disc;
+  }
+  .prose ol li {
+    list-style-type: decimal;
+  }
+  .prose blockquote {
+    border-left: 3px solid var(--color-border);
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .prose blockquote p {
+    color: var(--color-text-secondary);
+  }
+  .prose pre {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-accent);
+  }
+  .prose pre code {
+    color: var(--color-text-primary);
+  }
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 2rem 0;
+  }
+</style>
