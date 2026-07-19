@@ -16,7 +16,7 @@ test_timeout = 120
 pr_reviewer = "andywidjaja"
 
 # Verification
-verify_cmd = "npm run build"
+verify_cmd = "npm install && npm run build"
 
 # Retry / truncation limits
 max_retries = 3
