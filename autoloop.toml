@@ -17,6 +17,8 @@ pr_reviewer = "andywidjaja"
 
 # Verification
 verify_cmd = "npm install && npm run build"
+lint_command = ""
+test_pattern = ""
 
 # Retry / truncation limits
 max_retries = 3
