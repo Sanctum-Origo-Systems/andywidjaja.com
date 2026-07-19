@@ -8,6 +8,15 @@ export default defineConfig({
  site: 'https://andywidjaja.com',
  output: 'static',
  integrations: [mdx()],
+ markdown: {
+   shikiConfig: {
+     themes: {
+       light: 'github-light',
+       dark: 'github-dark',
+     },
+     defaultColor: false,
+   },
+ },
  vite: {
    plugins: [tailwindcss()],
  },
