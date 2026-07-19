@@ -1,17 +1,13 @@
 ---
 import '../../styles/global.css';
+import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-const posts = [
-  {
-    title: "The $110/month self-improving pipeline",
-    description: "Self-improving software is no longer a funded-startup problem. It's a solo-builder problem.",
-    href: "/blog/110-pipeline",
-    date: "2026-07-14",
-  },
-];
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
 ---
 
 <Base title="Blog | Andy Widjaja">
@@ -22,12 +18,12 @@ const posts = [
 
     <div class="space-y-8">
       {posts.map(post => (
-        <a href={post.href} class="block group">
-          <time class="font-mono text-text-secondary text-xs">{post.date}</time>
+        <a href={`/blog/${post.id}`} class="block group">
+          <time class="font-mono text-text-secondary text-xs">{post.data.date.toISOString().split('T')[0]}</time>
           <h2 class="text-lg font-semibold text-text-primary group-hover:text-accent transition-colors mt-1">
-            {post.title}
+            {post.data.title}
           </h2>
-          <p class="text-text-secondary text-sm mt-1">{post.description}</p>
+          <p class="text-text-secondary text-sm mt-1">{post.data.description}</p>
         </a>
       ))}
     </div>
