@@ -86,7 +86,8 @@ const { title, description, date } = Astro.props;
     color: var(--color-text-secondary);
   }
   .prose pre {
-    background-color: var(--color-surface);
+    background-color: var(--color-surface) !important;
+    color: var(--color-text-primary) !important;
     border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     padding: 1.25rem;
@@ -102,7 +103,7 @@ const { title, description, date } = Astro.props;
     color: var(--color-accent);
   }
   .prose pre code {
-    color: var(--color-text-primary);
+    color: inherit;
   }
   .prose hr {
     border: none;
