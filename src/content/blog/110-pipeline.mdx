@@ -1,0 +1,114 @@
+---
+title: "The $110/month self-improving pipeline"
+description: "Self-improving software is no longer a funded-startup problem. It's a solo-builder problem."
+date: 2026-07-14
+---
+
+I got tired of implementing my own backlog manually using claude code on my laptop. So I set up a loop, let the system triage it, decompose it if it's too big, implement it, run the tests, and open a PR. I do the merge from my phone. It's been running for 2 weeks: 27 merges, 1 failure, with $1.61 average per-issue.
+
+It's been running for 2 weeks. The number will likely change. Now I'm still actively collecting data. I'll update this post as the system matures. But the pattern seems to work well enough that I wanted to share it now rather than wait for a perfect dataset.
+
+## The cost
+
+```
+$100.00/month  Claude Max 5x (triage + implementation via Claude Code CLI)
+$  9.99/month  VPS (Hostinger, 2 vCPU, 8GB RAM, Ubuntu)
+$  0.00/month  GitHub
+─────────
+$109.99/month  Total
+```
+
+## The config
+
+The system is [autoloop](https://github.com/Sanctum-Origo-Systems/autoloop). One file that configures the loop:
+
+```toml
+# autoloop.toml
+repo = "your-org/your-repo"
+triage_model = "sonnet"
+impl_model = "claude-opus-4-6"
+verify_cmd = "uv run pytest"
+max_retries = 3
+protected_paths = ["autoloop/", "autoloop.toml"]
+```
+
+Three systemd timers. No Kubernetes. No orchestration framework. No fancy queue service.
+
+```
+OnCalendar=*-*-* 00:00:00 UTC   # triage
+OnCalendar=*-*-* 02:00:00 UTC   # implement
+OnCalendar=*-*-* 04:00:00 UTC   # changelog
+```
+
+## What happens to an issue
+
+<div class="bg-surface border border-border rounded-md p-4 mb-6 overflow-x-auto">
+  <img src="/blog-pipeline-light.svg" alt="Autoloop pipeline: GitHub Issue to Triage to Dependency Graph to Builder to Tests to Pull Request" class="w-full dark:hidden" />
+  <img src="/blog-pipeline-dark.svg" alt="Autoloop pipeline: GitHub Issue to Triage to Dependency Graph to Builder to Tests to Pull Request" class="w-full hidden dark:block" />
+</div>
+
+A GitHub issue enters the queue. Unattended:
+
+**Triage** (Sonnet, ~$0.10): Reads the issue, validates it, estimates the story points, and assigns priority. If the issue is too large, it decomposes into sub-issues with dependency ordering and triages each one. It recursively splits until every piece is buildable in one pass and generates a PR small enough for me to review on my phone.
+
+**Implement** (Opus, ~$1.50): Picks the top ready issue with respect to dependency ordering, creates a branch, runs Claude with the issue spec and repo context, runs tests and lint, checks that test files were added, and opens a PR.
+
+**Verification gate**: When tests fail or no test files were added, it retries up to 3 times, feeding the errors back to provide context for the next attempt. If all retries fail, it labels the issue `needs-human` and moves on.
+
+I review queued PRs on my phone and merge. That's my contribution to the loop. Can PR merge be done automatically? Yes, but it's a deliberate architecture decision for me to be the PR gate.
+
+## When it breaks
+
+**Day 8**. [Issue #40](https://github.com/Sanctum-Origo-Systems/patina/issues/40) was a duplicate. It described the issue was already implemented. The system still tried 3 times to produce a change, found nothing to change, failed verification because there was no diff. It labeled the issue `needs-human` and moved on to the next item in the queue.
+
+I looked at the issue and read the failure explanation. I closed it. It was the right outcome. A human looks at it, realizes it's a duplicate, closes it. The system couldn't know at the time. It just knew it couldn't produce a valid PR. So it got out of the way.
+
+**Day 12**. [Issue #159](https://github.com/Sanctum-Origo-Systems/patina/issues/159) got decomposed into 3 sub-issues. The second sub-issue produced a PR that broke an import path the first PR had introduced. Merge conflict. I fixed it from my phone in the Claude Code remote session (tmux on the VPS). It took me only 4 minutes.
+
+**The pattern:** when it fails, it's almost always because my issue description was ambiguous or assumed context the builder didn't have. Better issues → better PRs. The system exposed my sloppy specs faster than any code review would.
+
+## The constraint that makes it safe
+
+The system cannot modify itself.
+
+```
+protected_paths = ["autoloop/", "autoloop.toml"]
+```
+
+If an issue targets files under `protected_paths`, triage routes it to `needs-human`. The builder never touches its own logic, pipeline, or configuration. This safety check is done at both triage (primary gate) and implementation (safety net).
+
+***Self-improvement without self-modification.*** It improves the *product*. It cannot improve the *process*. That boundary is what I believe makes it safe to run unattended.
+
+## What it built
+
+[Patina](https://github.com/Sanctum-Origo-Systems/patina): 7,200 lines of Python, 9,200 lines of tests, 31 MCP tools.
+
+I built the initial core architecture interactively. Once the foundation was solid, autoloop took over the backlog. Of the last 40 merged PRs, 27 were autonomous.
+
+The pipeline itself is 3,500 lines. It was originally embedded in Patina's repo, then [extracted into a standalone package](https://github.com/Sanctum-Origo-Systems/autoloop) that I can apply to my other repositories with one command:
+
+```
+autoloop init --repo your-org/your-repo --verify-cmd "pytest"
+autoloop triage
+autoloop implement
+```
+
+## Where it works and where it doesn't
+
+I want to be honest about where this applies.
+
+**This works for:** solo builders, small teams, repos where one person or one team can hold full context. Non-critical-path systems where a 24-hour fix cycle is acceptable.
+
+**This doesn't work (yet) for:** regulated environments, multi-team codebases, customer-facing production with SLAs that need rollback mechanisms this setup doesn't provide (yet). The pattern applies at any scale but this implementation assumes one human at the gate.
+
+Two weeks isn't proof of anything long-term. I'll update this post again at 3 and 6 month mark. If it degrades, I'll share my findings. I'm just sharing the pattern, not declaring victory or claiming a solution that can fix all real world use cases.
+
+## What I learned
+
+The bottleneck isn't the model or the infrastructure. It's the issue quality. Vague issues produce bad PRs. Specific issues with clear acceptance criteria and file path hints produce PRs that merge on first review.
+
+A year ago this required a team. I'm simply amazed today it only requires a VPS and taste in writing issues.
+
+---
+
+*\* code: [github.com/Sanctum-Origo-Systems/autoloop](https://github.com/Sanctum-Origo-Systems/autoloop). Next post: I'll explain why the observer and the builder are separate instances.\**
