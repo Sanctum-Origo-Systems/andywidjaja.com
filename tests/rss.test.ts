@@ -47,6 +47,24 @@ describe('RSS endpoint', () => {
     });
   });
 
+  it('declares the Atom namespace', async () => {
+    const { GET } = await import('../src/pages/rss.xml.ts');
+    const result: any = await GET({ site: new URL('https://example.com') } as any);
+
+    expect(result.xmlns).toEqual({ atom: 'http://www.w3.org/2005/Atom' });
+  });
+
+  it('includes atom:link rel="self" derived from context.site', async () => {
+    const { GET } = await import('../src/pages/rss.xml.ts');
+    const site = new URL('https://example.com');
+    const result: any = await GET({ site } as any);
+
+    expect(result.customData).toContain('atom:link');
+    expect(result.customData).toContain('rel="self"');
+    expect(result.customData).toContain('type="application/rss+xml"');
+    expect(result.customData).toContain('href="https://example.com/rss.xml"');
+  });
+
   it('maps blog posts to RSS items with title, description, pubDate, and link', async () => {
     const { GET } = await import('../src/pages/rss.xml.ts');
     const result: any = await GET({ site: new URL('https://example.com') } as any);
