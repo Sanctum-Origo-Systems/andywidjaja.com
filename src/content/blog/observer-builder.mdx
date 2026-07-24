@@ -39,10 +39,10 @@ acts on it.
 
 Here's the loop, end to end.
 
-{/* TODO: Replace with pre-rendered SVG — src/assets/observer-loop.svg */}
-{/* Diagram 1: The Observer-Builder Loop */}
-{/* Observer → Beliefs → Draft Issue → [human approves] → GitHub Issue → Triage → Builder → Verify → [human merges] → Shipped */}
-![The Observer-Builder Loop](/observer-loop.svg)
+<div class="bg-surface border border-border rounded-md p-6 overflow-x-auto my-6">
+  <img src="/observer-loop-light.svg" alt="Observer-Builder Loop: Observer builds beliefs, notices gap, drafts issue, human approves, triage decomposes, builder implements, human merges, shipped, feeds back to observer" class="max-w-xs mx-auto dark:hidden" />
+  <img src="/observer-loop-dark.svg" alt="Observer-Builder Loop: Observer builds beliefs, notices gap, drafts issue, human approves, triage decomposes, builder implements, human merges, shipped, feeds back to observer" class="max-w-xs mx-auto hidden dark:block" />
+</div>
 
 The Observer runs on my work device. It ingests my work communications: DM's, emails, 
 messages, meetings, and commitments, and builds beliefs about my work. A real belief 
@@ -63,7 +63,10 @@ implementation hints. Then it stripped anything sensitive — names, handles, li
 me the draft. I read it and approved. It filed [issue #159](https://github.com/Sanctum-Origo-Systems/patina/issues/159).
 
 The Builder, the pipeline from my [last post](/blog/110-pipeline), on a $9
-VPS, picked it up that night. Triage decomposed it into three sub-issues with
+VPS, picked it up that night. Triage decomposed it into three sub-issues
+([#160](https://github.com/Sanctum-Origo-Systems/patina/issues/160),
+[#161](https://github.com/Sanctum-Origo-Systems/patina/issues/161),
+[#162](https://github.com/Sanctum-Origo-Systems/patina/issues/162)) with
 dependency ordering. The builder implemented all three. If #159 sounds
 familiar, it's the Day 12 issue from that post: the second sub-issue broke an
 import path and I fixed the conflict from my phone in four minutes. What I
@@ -75,10 +78,10 @@ approvals: one to file the issue, one to merge the PR.
 
 Because of the deliberate architecture of what each one is allowed to see.
 
-{/* TODO: Replace with pre-rendered SVG — src/assets/data-boundary.svg */}
-{/* Diagram 2: The Data Boundary */}
-{/* Work Device (private: messages, beliefs, decay, drafter) → sanitized issue → [human gate] → GitHub Issue (public) → VPS (triage, builder, verify) → [human merges] → main */}
-![The Data Boundary](/data-boundary.svg)
+<div class="bg-surface border border-border rounded-md p-6 overflow-x-auto my-6">
+  <img src="/data-boundary-light.svg" alt="Data Boundary: Work device with private data connects to VPS with public repo only through a sanitized GitHub issue, with human gates at both ends" class="max-w-xs mx-auto dark:hidden" />
+  <img src="/data-boundary-dark.svg" alt="Data Boundary: Work device with private data connects to VPS with public repo only through a sanitized GitHub issue, with human gates at both ends" class="max-w-xs mx-auto hidden dark:block" />
+</div>
 
 The Observer lives on my work device with my real data: messages, meetings,
 names. That data never leaves the machine. The Builder lives on a VPS and sees

@@ -1,0 +1,27 @@
+flowchart LR
+    subgraph work["Work Device · private"]
+        msg["Messages\nMeetings"] --> beliefs["Belief Graph"]
+        beliefs --> draft["Issue Drafter\n+ Sanitizer"]
+    end
+
+    draft -->|"sanitized issue"| gate["Human Gate"]
+    gate --> issue["GitHub Issue"]
+
+    subgraph vps["VPS · public repo only"]
+        triage["Triage"] --> builder["Builder"] --> verify["Verify\n+ Review"]
+    end
+
+    issue --> triage
+    verify -->|"human merges"| merge["Merged"]
+
+    style work fill:#1a1a2e,stroke:#58a6ff,color:#e1e4e8,stroke-width:2px
+    style vps fill:#161b22,stroke:#3fb950,color:#e1e4e8,stroke-width:2px
+    style gate fill:#d29922,stroke:#d29922,color:#1a1a2e,stroke-width:2px
+    style issue fill:#0d1117,stroke:#58a6ff,color:#58a6ff,stroke-width:2px
+    style merge fill:#1a7f37,stroke:#3fb950,color:#e1e4e8,stroke-width:2px
+    style msg fill:#1a1a2e,stroke:#6e7681,color:#e1e4e8
+    style beliefs fill:#1a1a2e,stroke:#6e7681,color:#e1e4e8
+    style draft fill:#1a1a2e,stroke:#6e7681,color:#e1e4e8
+    style triage fill:#161b22,stroke:#6e7681,color:#e1e4e8
+    style builder fill:#161b22,stroke:#6e7681,color:#e1e4e8
+    style verify fill:#161b22,stroke:#6e7681,color:#e1e4e8

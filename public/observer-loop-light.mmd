@@ -1,0 +1,18 @@
+flowchart LR
+    O["Observer"] -->|builds| B["Beliefs"]
+    B -->|notices gap| D["Draft Issue"]
+    D -->|"human approves"| GH["GitHub Issue"]
+    GH --> T["Triage"]
+    T -->|decomposes| I["Builder"]
+    I --> V["Verify + Review"]
+    V -->|"human merges"| S["Shipped"]
+    S -.->|"observed system changes"| O
+
+    style O fill:#f6f8fa,stroke:#0969da,color:#1f2328
+    style B fill:#f6f8fa,stroke:#0969da,color:#1f2328
+    style D fill:#f6f8fa,stroke:#0969da,color:#1f2328
+    style GH fill:#ffffff,stroke:#0969da,color:#0969da,stroke-width:2px
+    style T fill:#f6f8fa,stroke:#1a7f37,color:#1f2328
+    style I fill:#f6f8fa,stroke:#1a7f37,color:#1f2328
+    style V fill:#f6f8fa,stroke:#1a7f37,color:#1f2328
+    style S fill:#dafbe1,stroke:#1a7f37,color:#1f2328,stroke-width:2px
