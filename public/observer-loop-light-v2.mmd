@@ -1,0 +1,39 @@
+flowchart LR
+    subgraph observe["Observer · work device"]
+        direction TB
+        O["Observer"]
+        B["Beliefs"]
+        D["Draft Issue"]
+        O -->|builds| B
+        B -->|notices gap| D
+    end
+
+    D --> gate1["Human\nGate"]
+    gate1 -->|approves| GH["GitHub\nIssue"]
+    GH --> triage
+
+    subgraph build["Builder · VPS"]
+        direction TB
+        triage["Triage"]
+        I["Builder"]
+        V["Verify +\nReview"]
+        triage -->|decomposes| I
+        I --> V
+    end
+
+    V --> gate2["Human\nGate"]
+    gate2 -->|merges| S["Shipped"]
+    S -.->|"observed system\nchanges"| O
+
+    style observe fill:#f6f8fa,stroke:#0969da,color:#1f2328,stroke-width:2px
+    style build fill:#f6f8fa,stroke:#1a7f37,color:#1f2328,stroke-width:2px
+    style gate1 fill:#d29922,stroke:#d29922,color:#ffffff,stroke-width:2px
+    style gate2 fill:#d29922,stroke:#d29922,color:#ffffff,stroke-width:2px
+    style O fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style B fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style D fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style GH fill:#ffffff,stroke:#0969da,color:#0969da,stroke-width:2px
+    style triage fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style I fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style V fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style S fill:#dafbe1,stroke:#1a7f37,color:#1f2328,stroke-width:2px

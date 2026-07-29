@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph work["Work Device · private"]
+        direction TB
+        msg["Messages\nMeetings"]
+        beliefs["Belief Graph"]
+        draft["Issue Drafter\n+ Sanitizer"]
+        msg --> beliefs --> draft
+    end
+
+    draft --> gate1["Human\nGate"]
+    gate1 -->|"sanitized\nissue"| issue["GitHub\nIssue"]
+    issue --> gate2["Human\nGate"]
+    gate2 --> triage
+
+    subgraph vps["VPS · public repo only"]
+        direction TB
+        triage["Triage"]
+        builder["Builder"]
+        verify["Verify +\nReview"]
+        triage --> builder --> verify
+    end
+
+    verify --> merge["Merged"]
+
+    style work fill:#1a1a2e,stroke:#58a6ff,color:#e1e4e8,stroke-width:2px
+    style vps fill:#161b22,stroke:#3fb950,color:#e1e4e8,stroke-width:2px
+    style gate1 fill:#d29922,stroke:#d29922,color:#1a1a2e,stroke-width:2px
+    style gate2 fill:#d29922,stroke:#d29922,color:#1a1a2e,stroke-width:2px
+    style issue fill:#0d1117,stroke:#58a6ff,color:#58a6ff,stroke-width:2px
+    style merge fill:#1a7f37,stroke:#3fb950,color:#e1e4e8,stroke-width:2px
+    style msg fill:#1a1a2e,stroke:#6e7681,color:#e1e4e8
+    style beliefs fill:#1a1a2e,stroke:#6e7681,color:#e1e4e8
+    style draft fill:#1a1a2e,stroke:#6e7681,color:#e1e4e8
+    style triage fill:#161b22,stroke:#6e7681,color:#e1e4e8
+    style builder fill:#161b22,stroke:#6e7681,color:#e1e4e8
+    style verify fill:#161b22,stroke:#6e7681,color:#e1e4e8
