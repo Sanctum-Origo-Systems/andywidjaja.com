@@ -4,10 +4,10 @@ description: "We spend enormous effort making AI act, and almost none making it 
 date: 2026-07-22
 ---
 
-I'm a builder, but yet most of the work I'm proudest of, surprisingly, hasn't been 
+I'm a builder, yet most of the work I'm proudest of, surprisingly, hasn't been 
 building things. It's been noticing things. A pipeline that got slower while everyone 
 believed it got better. A feature that worked well in our isolated test environment 
-and failed in customer's environment. Noticing is the job nobody assigns, and every 
+and failed in customers' environments. Noticing is the job nobody assigns, and every 
 time it mattered, it mattered more than the code written.
 
 Here's what that work actually is. You watch a system operate. You form beliefs
@@ -40,11 +40,11 @@ acts on it.
 Here's the loop, end to end.
 
 <div class="bg-surface border border-border rounded-md p-6 overflow-x-auto my-6">
-  <img src="/observer-loop-light.svg" alt="Observer-Builder Loop: Observer builds beliefs, notices gap, drafts issue, human approves, triage decomposes, builder implements, human merges, shipped, feeds back to observer" class="max-w-xs mx-auto dark:hidden" />
-  <img src="/observer-loop-dark.svg" alt="Observer-Builder Loop: Observer builds beliefs, notices gap, drafts issue, human approves, triage decomposes, builder implements, human merges, shipped, feeds back to observer" class="max-w-xs mx-auto hidden dark:block" />
+  <img src="/observer-loop-light-v2.svg" alt="Observer-Builder Loop: Observer builds beliefs, notices gap, drafts issue, human approves, triage decomposes, builder implements, human merges, shipped, feeds back to observer" class="w-full dark:hidden" />
+  <img src="/observer-loop-dark-v2.svg" alt="Observer-Builder Loop: Observer builds beliefs, notices gap, drafts issue, human approves, triage decomposes, builder implements, human merges, shipped, feeds back to observer" class="w-full hidden dark:block" />
 </div>
 
-The Observer runs on my work device. It ingests my work communications: DM's, emails, 
+The Observer runs on my work device. It ingests my work communications: DMs, emails, 
 messages, meetings, and commitments, and builds beliefs about my work. A real belief 
 from its store:
 
@@ -74,13 +74,18 @@ didn't say then is that I never wrote the issue. The Observer noticed the bug,
 wrote the spec, and the Builder shipped the fix. My contribution was two
 approvals: one to file the issue, one to merge the PR.
 
+When I review a feature request or bug report draft the Observer files, I'm not
+checking the engineering. The acceptance criteria are usually better than mine. 
+I'm checking for sensitive data leaks: an actual user name, a quoted reply, 
+anything that ties a public issue to a private conversation.
+
 ## Why two machines?
 
 Because of the deliberate architecture of what each one is allowed to see.
 
 <div class="bg-surface border border-border rounded-md p-6 overflow-x-auto my-6">
-  <img src="/data-boundary-light.svg" alt="Data Boundary: Work device with private data connects to VPS with public repo only through a sanitized GitHub issue, with human gates at both ends" class="max-w-xs mx-auto dark:hidden" />
-  <img src="/data-boundary-dark.svg" alt="Data Boundary: Work device with private data connects to VPS with public repo only through a sanitized GitHub issue, with human gates at both ends" class="max-w-xs mx-auto hidden dark:block" />
+  <img src="/data-boundary-light-v2.svg" alt="Data Boundary: Work device with private data connects to VPS with public repo only through a sanitized GitHub issue, with human gates at both ends" class="w-full dark:hidden" />
+  <img src="/data-boundary-dark-v2.svg" alt="Data Boundary: Work device with private data connects to VPS with public repo only through a sanitized GitHub issue, with human gates at both ends" class="w-full hidden dark:block" />
 </div>
 
 The Observer lives on my work device with my real data: messages, meetings,
