@@ -1,0 +1,84 @@
+---
+title: "Autonomy is earned, not configured"
+description: "Graduated autonomy for a build pipeline that builds itself."
+date: 2026-09-23
+---
+
+I have a build pipeline, autoloop. I point it at two codebases: the app it's building (Patina), and itself. Same loop: triage an issue, decompose it, implement, run tests, review, and open a PR. If PR has issues, the pipeline attempts to fix the PR. The only thing that changes is which repo it's working on.
+
+So I did an experiment. I let autoloop pipeline build both for a couple of months and watched the numbers. If **graduated autonomy** means anything, it's a system that earns trust instead of being handed over. The two targets shouldn't earn the same amount.
+
+## The setup
+
+<div class="bg-surface border border-border rounded-md p-6 overflow-x-auto my-6">
+  <img src="/autonomy-earned-light.svg" alt="Autoloop pipeline building Patina (78% first-attempt) and itself (60% first-attempt) through a human gate, with autonomy criteria" class="w-full dark:hidden" />
+  <img src="/autonomy-earned-dark.svg" alt="Autoloop pipeline building Patina (78% first-attempt) and itself (60% first-attempt) through a human gate, with autonomy criteria" class="w-full hidden dark:block" />
+</div>
+
+Nothing dramatic. Each repo gets an `autoloop.toml` and a set of GitHub issues. The config names what the pipeline is *not* allowed to touch:
+
+```toml
+# autoloop.toml: protected paths the pipeline can't modify
+protected = [
+   "autoloop.toml",
+   "src/autoloop/guards/",   # it can't edit its own safety boundaries
+   ".github/workflows/",
+]
+```
+
+That last part matters more when the pipeline is building itself. When it builds Patina, the worst case is a bad feature. When it builds autoloop, a bad PR getting merged could break the thing that's supposed to keep it safe. Same tool, very different blast radius.
+
+## The metrics
+
+Every implementation gets logged: did it pass on the first attempt, how many retries, did I have to edit it by hand before merging. Both dashboards are public: [Patina](https://github.com/Sanctum-Origo-Systems/patina/blob/main/EVAL.md) and [autoloop](https://github.com/Sanctum-Origo-Systems/autoloop/blob/main/EVAL.md).
+
+"First attempt" is a specific bar. When a PR comes back broken (merge conflict, failing test, lint error), the pipeline doesn't just stop and wait for me. It auto-fixes: rebase on main, resolve the conflicts, run the formatter, have the model repair the failing test, re-check. But only for a capped number of rounds. First-attempt success means it cleared everything without needing a repair loop to run. The retries are the pipeline fixing its own work, which is another kind of autonomy, and one I deliberately set a limit boundary. Self-repair that can loop forever isn't a feature. It's a way to burn tokens on a change that was never going to be successfully implemented.
+
+Building **Patina**: 65 implementations, **78% first-attempt success**, 10% of PRs needed a human edit. Most issues resolved in a single pass (roughly 51 of 65 one-shot; the rest took a retry or two).
+
+Building **itself**: 78 implementations, **59% first-attempt success**, 14% needed a human edit.
+
+Read that gap again. The pipeline is noticeably better at building the product than at building its own infrastructure. Self-modification is where it's *least* reliable, and that's exactly where I've clamped it down hardest with protected paths. The guardrails aren't decoration. They sit precisely where the measured failure rate is worst.
+
+## Why is this graduated autonomy?
+
+Most people treat autonomy as a switch: either on or off. That's rather incorrect. How much we should trust the agent depends on what it's building, and it has to earn that from what it actually ships to production in that repo.
+
+In practice: nothing auto-merges yet. The modules won't be sitting at 100% either. Those are single implementations, below any realistic volume I'd trust handing autonomy to the agent. A rung isn't earned by one lucky pass. To auto-merge, a target has to clear three bars at once: over 90% first-attempt success, under 5% of PRs needing a hand-edit, and at least 10 clean merges behind it. The pipeline stays gated until all three clear, per target, on its own recorded history.
+
+```
+module                    first-attempt   impls   auto-merge?
+src/patina/                    70%          20        no
+src/patina/adapters/           36%          11        no   (hardest)
+src/autoloop/                  59%          78        no
+```
+
+The adapter code is the hardest thing to build: external surfaces, other people's formats. It knows, because the number says so. That's the whole point: the system doesn't get to feel confident. It gets a number it can't argue with.
+
+## The number decides, not me
+
+I don't set the trust level. The build history does. Did the tests pass the first time. Did I have to fix it by hand. Has it done enough of these to mean anything. None of that is my opinion of how it's doing. It's just what happened.
+
+Same idea as the last post. The observer watches and writes down what actually happened; this is what you do with those records: you let them decide something. The model doesn't get a vote on whether I trust it. The count already answered.
+
+There's a stricter version in Patina's code: a 0-to-6 ladder that promotes and demotes itself. It's going to be on a post. This one is the plain running version. One pipeline that earns more trust building my app than building itself, and knows the difference because it counted.
+
+## What this doesn't prove
+
+2 months, 2 repos, one operator reviewing every merge. The rates are calibrated to my code and my taste, not anyone else's. The dashboards report rolling deltas, not lifetime averages. The numbers shift as the system improves or regresses. A flattering cumulative average would hide exactly the trends that matter.
+
+But the pattern holds: point the same builder at two problems and it earns a different amount of trust on each. Autonomy that doesn't grow nor shrink by what you're actually good at isn't earned. It's just switched on.
+
+```
+$ autoloop status --by-target
+patina   78% first-attempt   gated
+autoloop 59% first-attempt   gated (protected paths active)
+```
+
+---
+
+*Code: [github.com/Sanctum-Origo-Systems/patina](https://github.com/Sanctum-Origo-Systems/patina) ·
+[autoloop](https://github.com/Sanctum-Origo-Systems/autoloop) ·
+Eval: [Patina EVAL.md](https://github.com/Sanctum-Origo-Systems/patina/blob/main/EVAL.md) · [Autoloop EVAL.md](https://github.com/Sanctum-Origo-Systems/autoloop/blob/main/EVAL.md) · Previous:
+[The observer files the bug](/blog/observer-builder) ·
+[The $110/month pipeline](/blog/110-pipeline)*
