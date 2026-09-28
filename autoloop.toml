@@ -16,7 +16,7 @@ test_timeout = 120
 pr_reviewer = "andywidjaja"
 
 # Verification
-verify_cmd = "npm install && npm run build"
+verify_cmd = "npm ci && npm run build"
 lint_command = ""
 test_pattern = ""
 
@@ -41,3 +41,7 @@ triage_labels = [
     "in-review",
     "needs-human",
 ]
+
+# Jev decision model (experimental, off by default)
+[jev]
+mode = "off"
