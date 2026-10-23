@@ -4,9 +4,9 @@ description: "Graduated autonomy for a build pipeline that builds itself."
 date: 2026-09-23
 ---
 
-I have a build pipeline, autoloop. I point it at two codebases: the app it's building (Patina), and itself. Same loop: triage an issue, decompose it, implement, run tests, review, and open a PR. If PR has issues, the pipeline attempts to fix the PR. The only thing that changes is which repo it's working on.
+I have a build pipeline, autoloop. I point it at two codebases: the app it's building (Patina), and itself. Same exact loop: triage an issue, decompose it, implement, run tests, review, and open a PR. If PR has issues, the pipeline attempts to fix the PR. The only thing that changes is which repo it's working on.
 
-So I did an experiment. I let autoloop pipeline build both for a couple of months and watched the numbers. If **graduated autonomy** means anything, it's a system that earns trust instead of being handed over. The two targets shouldn't earn the same amount.
+So I did an experiment. I let autoloop pipeline build both for a couple of months and watched the numbers. If **graduated autonomy** means anything, it's a system that earns trust from correctness metric instead of being handed over. The two targets shouldn't earn the same amount.
 
 ## The setup
 
@@ -38,7 +38,7 @@ Building **Patina**: 65 implementations, **78% first-attempt success**, 10% of P
 
 Building **itself**: 78 implementations, **59% first-attempt success**, 14% needed a human edit.
 
-Read that gap again. The pipeline is noticeably better at building the product than at building its own infrastructure. Self-modification is where it's *least* reliable, and that's exactly where I've clamped it down hardest with protected paths. The guardrails aren't decoration. They sit precisely where the measured failure rate is worst.
+Notice that gap again. The pipeline is noticeably better at building the product than at building its own infrastructure. Self-modification is where it's *least* reliable, and that's exactly where I've clamped it down hardest with protected paths. The guardrails aren't just decoration. They sit precisely where the measured failure rate is worst.
 
 ## Why is this graduated autonomy?
 
