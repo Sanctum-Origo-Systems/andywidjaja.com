@@ -23,6 +23,12 @@ const tint = (ascii: string) => {
   }
   return open ? out + '</span>' : out;
 };
+
+// Running token count after each row (0 rows .. 42 rows), shown by the status line.
+const counts = (ascii: string) => {
+  let n = 0;
+  return [0, ...ascii.replace(/\n$/, '').split('\n').map((row) => (n += row.replace(/ /g, '').length))];
+};
 ---
 
 <div class="mb-6">
@@ -30,9 +36,12 @@ const tint = (ascii: string) => {
     <div class="decode" role="img" aria-label="ASCII portrait of Andy Widjaja">
       <pre class="d" aria-hidden="true" set:html={tint(dark)} />
       <pre class="l" aria-hidden="true" set:html={tint(light)} />
+      <span class="cursor d"></span><span class="cursor l"></span>
     </div>
   </div>
-  <div class="decode-status" aria-hidden="true"></div>
+  <div class="decode-status" aria-hidden="true">
+    <span class="tok"><span class="strip d">{counts(dark).map((c) => <span>{c}</span>)}</span><span class="strip l">{counts(light).map((c) => <span>{c}</span>)}</span></span> tokens<span class="done d"> &middot; 1.8 s &middot; done</span><span class="done l"> &middot; 1.8 s &middot; done</span>
+  </div>
 </div>
 
 <style>
@@ -46,8 +55,8 @@ const tint = (ascii: string) => {
     transform: scale(.5); transform-origin: 0 0; -webkit-text-size-adjust: none;
     clip-path: inset(0 0 100% 0); animation: decode 1.8s steps(42, end) .2s forwards;
   }
-  .decode::after { /* cursor */
-    content: ""; position: absolute; left: 0; top: 0; width: 100%; height: calc(214px / 42);
+  .cursor {
+    position: absolute; left: 0; top: 0; width: 100%; height: calc(214px / 42);
     background: var(--color-success); opacity: .55; animation: cursor 1.8s steps(42, end) .2s forwards;
   }
   @keyframes decode { to { clip-path: inset(0 0 0 0); } }
@@ -58,23 +67,27 @@ const tint = (ascii: string) => {
   .decode :global(.b2) { color: color-mix(in srgb, var(--color-text-secondary) 40%, var(--color-accent)); }
   .decode :global(.b3) { color: var(--color-accent); }
   .decode :global(.b4) { color: var(--color-text-primary); }
-  :global(html.dark) .decode .l, :global(html:not(.dark)) .decode .d { display: none; }
 
-  /* Token counter: counts up with the reveal, then shows "· done".
-     1366 = non-space chars in portrait-decode-*.txt; recount if the ASCII changes. */
-  @property --tok { syntax: '<integer>'; initial-value: 0; inherits: false; }
+  /* Token counter ("· 1.8 s · done" appears when the reveal ends): a column of per-row running totals slides up one line per
+     row, in step with the reveal. Transform-only, so it animates in every browser. */
   .decode-status { margin-top: .4rem; white-space: nowrap; text-align: center;
     font: 400 .75rem/1.2 var(--font-mono); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
-  .decode-status::before { --tok: 1366; counter-reset: tok var(--tok);
-    content: counter(tok) " tokens \00B7  1.8 s"; animation: tok 1.8s steps(42, end) .2s backwards; }
-  .decode-status::after { content: " \00B7  done"; opacity: 0; animation: done 0s 2s forwards; }
-  @keyframes tok { from { --tok: 0; } to { --tok: 1366; } }
+  .tok { display: inline-block; height: 1.2em; overflow: hidden; vertical-align: bottom; text-align: right; }
+  .strip { display: block; animation: decode-tok 1.8s steps(42, end) .2s forwards; }
+  .done { opacity: 0; animation: done 0s 2s forwards; }
+  .strip > span { display: block; height: 1.2em; }
+  @keyframes decode-tok { to { transform: translateY(calc(-42 * 1.2em)); } }
   @keyframes done { to { opacity: 1; } }
+
+  /* Every animated part has a dark (.d) and light (.l) copy. Showing a copy
+     restarts its animation, so a theme toggle replays the reveal, cursor,
+     counter and "done" together. */
+  :global(html.dark) .l, :global(html:not(.dark)) .d { display: none; }
 
   @media (prefers-reduced-motion: reduce) {
     .decode pre { animation: none; clip-path: none; }
-    .decode::after { display: none; }
-    .decode-status::before { animation: none; }
-    .decode-status::after { animation: none; opacity: 1; }
+    .cursor { display: none !important; }
+    .strip { animation: none; transform: translateY(calc(-42 * 1.2em)); }
+    .done { animation: none; opacity: 1; }
   }
 </style>
