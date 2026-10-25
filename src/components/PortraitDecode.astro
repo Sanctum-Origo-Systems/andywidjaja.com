@@ -1,0 +1,80 @@
+---
+import dark from '../assets/portrait/portrait-decode-dark.txt?raw';
+import light from '../assets/portrait/portrait-decode-light.txt?raw';
+
+// Tint by brightness like the gallery preview: wrap runs of glyphs from the
+// same ramp band in a span. Spaces pass through, so the text stays byte-exact.
+const BANDS: Record<string, number> = { '.': 1, "'": 1, '-': 1, ':': 2, ';': 2, '=': 2, '+': 3, '*': 3, '#': 3, '%': 4, '@': 4 };
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const tint = (ascii: string) => {
+  let out = '';
+  let open = 0;
+  for (const ch of ascii) {
+    const band = BANDS[ch] ?? 0;
+    if (band !== open && ch !== ' ' && ch !== '\n') {
+      if (open) out += '</span>';
+      if (band) out += `<span class="b${band}">`;
+      open = band;
+    } else if (open && (ch === ' ' || ch === '\n')) {
+      out += '</span>';
+      open = 0;
+    }
+    out += esc(ch);
+  }
+  return open ? out + '</span>' : out;
+};
+---
+
+<div class="mb-6">
+  <div class="inline-block p-1.5 border border-border bg-surface rounded-md">
+    <div class="decode" role="img" aria-label="ASCII portrait of Andy Widjaja">
+      <pre class="d" aria-hidden="true" set:html={tint(dark)} />
+      <pre class="l" aria-hidden="true" set:html={tint(light)} />
+    </div>
+  </div>
+  <div class="decode-status" aria-hidden="true"></div>
+</div>
+
+<style>
+  /* 56 cols x 42 rows into 176x214. Glyphs are drawn at 2x and scaled down,
+     so browser minimum font sizes can't break the grid. */
+  .decode { width: 176px; height: 214px; overflow: hidden; position: relative; background: var(--color-bg); border-radius: .25rem; text-align: left; }
+  .decode pre {
+    width: max-content; /* clip-path must cover the full unscaled line, not the 176px box */
+    margin: 0; white-space: pre; color: var(--color-accent);
+    font-family: var(--font-mono); font-size: calc(2 * 176px / 56 / 0.6); line-height: calc(2 * 214px / 42);
+    transform: scale(.5); transform-origin: 0 0; -webkit-text-size-adjust: none;
+    clip-path: inset(0 0 100% 0); animation: decode 1.8s steps(42, end) .2s forwards;
+  }
+  .decode::after { /* cursor */
+    content: ""; position: absolute; left: 0; top: 0; width: 100%; height: calc(214px / 42);
+    background: var(--color-success); opacity: .55; animation: cursor 1.8s steps(42, end) .2s forwards;
+  }
+  @keyframes decode { to { clip-path: inset(0 0 0 0); } }
+  @keyframes cursor { to { top: 100%; opacity: 0; } }
+  /* Brightness bands, dim to bright: faint edges fade into the background,
+     highlights get the full text color, so the face has depth at 176px. */
+  .decode :global(.b1) { color: color-mix(in srgb, var(--color-text-secondary) 55%, var(--color-bg)); }
+  .decode :global(.b2) { color: color-mix(in srgb, var(--color-text-secondary) 40%, var(--color-accent)); }
+  .decode :global(.b3) { color: var(--color-accent); }
+  .decode :global(.b4) { color: var(--color-text-primary); }
+  :global(html.dark) .decode .l, :global(html:not(.dark)) .decode .d { display: none; }
+
+  /* Token counter: counts up with the reveal, then shows "· done".
+     1366 = non-space chars in portrait-decode-*.txt; recount if the ASCII changes. */
+  @property --tok { syntax: '<integer>'; initial-value: 0; inherits: false; }
+  .decode-status { margin-top: .4rem; white-space: nowrap; text-align: center;
+    font: 400 .75rem/1.2 var(--font-mono); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+  .decode-status::before { --tok: 1366; counter-reset: tok var(--tok);
+    content: counter(tok) " tokens \00B7  1.8 s"; animation: tok 1.8s steps(42, end) .2s backwards; }
+  .decode-status::after { content: " \00B7  done"; opacity: 0; animation: done 0s 2s forwards; }
+  @keyframes tok { from { --tok: 0; } to { --tok: 1366; } }
+  @keyframes done { to { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .decode pre { animation: none; clip-path: none; }
+    .decode::after { display: none; }
+    .decode-status::before { animation: none; }
+    .decode-status::after { animation: none; opacity: 1; }
+  }
+</style>
