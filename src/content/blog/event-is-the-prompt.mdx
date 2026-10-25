@@ -1,0 +1,52 @@
+---
+title: "The event is the prompt"
+description: "I built an ambient agent for my own projects. Here's what it taught me."
+date: 2026-10-01
+---
+
+Most of the agents I've built start the same way. Someone types a prompt / request, the agent does the work, and that's it. That pattern works well for questions. But a lot of work does not show up as a question. A file lands in a bucket. An alert fires at 2am. A nightly job discovers an issue. Nobody is sitting in a chat window waiting for these scenarios.
+
+LangChain calls agents that act on events like these [ambient agents](https://www.langchain.com/blog/introducing-ambient-agents). Last week, some of my AWS colleagues and I published how to build one on AWS: **[Building ambient agents with Amazon Bedrock AgentCore](https://aws.amazon.com/blogs/machine-learning/building-ambient-agents-with-amazon-bedrock-agentcore-from-event-driven-signals-to-human-in-the-loop-workflows/)**. The [sample code](https://github.com/aws-samples/sample-ambient-agent) is on GitHub. If you want the architecture, how the agent asks a person for input, and when you shouldn't use the pattern at all, please read the blog and try out the code. I am not repeating it here.
+
+This post is about what happened afterwards. I adopted ambient agents for myself.
+
+## My Observer was waiting on me
+
+On my personal projects I run two AI agents, actually 3 if we take into consideration the GPT-based adversarial Auditors that run weekly. A Builder implements features and bug fixes. An [Observer](/blog/observer-builder) checks whether those fixes actually work on real data and actual daily use. They talk through a GitHub issue as a message exchange forum.
+
+The weak link was me. Every day I had to wake the Observer up and tell it, "There's new work pending, go check it." That's exactly the kind of start-up friction an ambient agent is supposed to remove. So I made it ambient.
+
+Now a scheduled job runs every morning at 10 AM:
+
+1. Pull the latest code.
+2. Take a snapshot of the live data.
+3. Run plain deterministic verifications against the data snapshot. No LLM involved at this step.
+4. Only if something changed, ask the LLM to judge the results and draft a note for the Builder.
+
+The clock is the event. "Something changed" is the reason to wake up.
+
+## The first week experience
+
+It posted twice, and both posts caught a regression that the previous day's bug fix had introduced. Both fixes had passed their tests. Both problems only showed up on real data.
+
+The first failures were mine, not the model's. Two runs failed because my credentials expired overnight and I wasn't warned. Now the job checks that first and pings me instead of failing quietly.
+
+## What lesson did I learn?
+
+**A quiet day should post nothing.** My first ambient agent version posted "all clean" every day. Within a week everyone would have been pre-conditioned to ignore it. If nothing is wrong, the best thing the agent can do is nothing.
+
+**Allow plain code to decide when LLM reasoning needs to run.** On a quiet day the job finishes in about 30 seconds without calling a model at all. When the model does run, it only writes a draft. A script checks the draft for sensitive or personal data leakage before anything gets posted. The model makes the judgment calls. The code does anything that touches the outside world.
+
+**Pay attention to what doesn't happen.** A post to the Builder is only half the loop. If there's no reply in 48 hours, that silence is the news. So the job tells me, instead of posting the same finding again to a thread nobody is reading.
+
+**Don't make the human step cumbersome.** If I had to approve every action, I'd just move the interruptions from a chat window to my inbox. I approved the safe actions once, up front. The job only asks me about the things that really need me, like deleting data or deciding whether two records are the same person.
+
+## What I can't claim yet
+
+This is just one week run, one agent, one codebase, and one person. "A quiet day should post nothing" only works if the verifications behind the judgement of issue-free day are good. A quiet day with weak validations is just a day nobody looked at. I'll post an update in a month with the actual numbers, including the days it reported incidence-free when it shouldn't have.
+
+My takeaway so far: the hard part of an ambient agent isn't the model. It's deciding which events deserve a response, which responses deserve a person, and how to make the quiet days trustworthy enough that people can confidently stop checking.
+
+---
+
+*Architecture and code: [Building ambient agents with Amazon Bedrock AgentCore](https://aws.amazon.com/blogs/machine-learning/building-ambient-agents-with-amazon-bedrock-agentcore-from-event-driven-signals-to-human-in-the-loop-workflows/) · [aws-samples/sample-ambient-agent](https://github.com/aws-samples/sample-ambient-agent) · Previous: [Autonomy is earned, not configured](/blog/autonomy-earned)*
