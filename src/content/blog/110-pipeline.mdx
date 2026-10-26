@@ -4,7 +4,7 @@ description: "Self-improving software is no longer a funded-startup problem. It'
 date: 2026-07-14
 ---
 
-I got tired of implementing my own backlog manually using claude code on my laptop. So I set up a loop, let the system triage it, decompose it if it's too big, implement it, run the tests, and open a PR. I do the merge from my phone. It's been running for 2 weeks: 27 merges, 1 failure, with $1.61 average per-issue.
+I got tired of implementing my own backlog manually using claude code on my laptop. So I set up a loop, let the system triage it, decompose it if it's too big, implement it, run the tests, and open a PR. I do the merge from my phone. It's been running for 2 weeks: 65 merges, 1 failure, with $1.61 average per-issue.
 
 It's been running for 2 weeks. The number will likely change. Now I'm still actively collecting data. I'll update this post as the system matures. But the pattern seems to work well enough that I wanted to share it now rather than wait for a perfect dataset.
 
@@ -108,6 +108,8 @@ Two weeks isn't proof of anything long-term. I'll update this post again at 3 an
 The bottleneck isn't the model or the infrastructure. It's the issue quality. Vague issues produce bad PRs. Specific issues with clear acceptance criteria and file path hints produce PRs that merge on first review.
 
 A year ago this required a team. I'm simply amazed today it only requires a VPS and taste in writing issues.
+
+*Update (2026-10-26): the opening line said 27 merges. That was the count at day six; by the two-week mark the pipeline had merged 65 PRs, with the same single failure. Since this post: implementation runs on Opus 5.5 (`impl_model = "claude-opus-5-5"`), triage and implement run several times a day instead of once, and the VPS moved to a larger plan (4 vCPU, 16 GB, $12.99/month), so the bill is now about $113/month.*
 
 ---
 
