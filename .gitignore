@@ -24,3 +24,4 @@ pnpm-debug.log*
 .idea/
 autoloop/
 autoloop/run_history.jsonl
+.autoloop.lock
