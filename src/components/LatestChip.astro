@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+
+const [latest] = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+{latest && (
+  <a
+    href={`/blog/${latest.id}`}
+    class="group inline-flex max-w-full items-center gap-2 border border-border rounded-full bg-surface pl-1.5 pr-3 py-1 text-xs hover:border-accent transition-colors"
+  >
+    <span class="shrink-0 rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-bg">Latest</span>
+    <span class="truncate text-text-primary group-hover:text-accent transition-colors">{latest.data.title}</span>
+    <span class="shrink-0 text-text-secondary">&rarr;</span>
+  </a>
+)}
