@@ -1,0 +1,58 @@
+%%{init: {"themeVariables": {"lineColor": "#1f2328"}, "flowchart": {"wrappingWidth": 520}}}%%
+flowchart TB
+    subgraph prefill[" "]
+        direction TB
+        PH["<b>PREFILL:</b> one parallel pass over the prompt"]
+        PH ~~~ P
+        P["prompt tokens<br/>[t1][t2][t3] ... [t40,000]"]
+        subgraph kvRow[" "]
+            direction LR
+            KV1["KV cache<br/>keys + values for t1..t40K"]
+            CP["cached prefix: nearly free"]
+        end
+        P -->|"all at once, as large matrix multiplications"| kvRow
+        KV1 ~~~ CP
+        PC["cost: fast per token"]
+        kvRow ~~~ PC
+    end
+
+    subgraph decode[" "]
+        direction TB
+        DH["<b>DECODE:</b> one token per pass"]
+        DH ~~~ cacheRow
+        subgraph cacheRow[" "]
+            direction LR
+            KVC["KV cache t1 .. t40K &nbsp;│ +1 │ +1 │ ... │"]
+            NE["one new entry per step"]
+        end
+        KVC ~~~ NE
+        subgraph chainRow[" "]
+            direction LR
+            T1["token 1"] --> T2["token 2"] --> T3["token 3"] --> T4["..."] --> TN["token N"]
+        end
+        cacheRow -->|"every step reads the weights + the whole cache"| chainRow
+        DC["(~6 to 9 ms per token, every token, in order)<br/>cost: N tokens × ITL (inter-token latency). This is the wall clock."]
+        chainRow ~~~ DC
+    end
+
+    prefill ~~~ decode
+
+    style prefill fill:#f6f8fa,stroke:#0969da,color:#1f2328,stroke-width:2px
+    style decode fill:#f6f8fa,stroke:#d29922,color:#1f2328,stroke-width:2px
+    style PH fill:none,stroke:none,color:#1f2328
+    style DH fill:none,stroke:none,color:#1f2328
+    style kvRow fill:none,stroke:none
+    style cacheRow fill:none,stroke:none
+    style chainRow fill:none,stroke:none
+    style P fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style KV1 fill:#f6f8fa,stroke:#0969da,color:#1f2328,stroke-width:2px
+    style CP fill:#f6f8fa,stroke:#0969da,color:#0969da,stroke-dasharray:5 5
+    style PC fill:#f6f8fa,stroke:#1a7f37,color:#1a7f37
+    style KVC fill:#f6f8fa,stroke:#0969da,color:#1f2328,stroke-width:2px
+    style NE fill:#f6f8fa,stroke:#d0d7de,color:#656d76,stroke-dasharray:5 5
+    style T1 fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style T2 fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style T3 fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style T4 fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style TN fill:#f6f8fa,stroke:#d0d7de,color:#1f2328
+    style DC fill:#f6f8fa,stroke:#d29922,color:#d29922
