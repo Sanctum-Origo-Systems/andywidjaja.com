@@ -1,0 +1,37 @@
+---
+title: "Moving 800 million documents is an inference problem"
+description: "Batches in parallel, concurrency under a limit: the same two tricks move documents and serve models."
+date: 2026-10-29
+---
+
+What does moving 800 million documents have in common with AI inference? The same two tricks: run batches in parallel, and keep concurrency under the limits of whatever sits downstream.
+
+I was the tech lead on a project to migrate 800 million documents from on-prem to AWS for a global insurer. My co-authors and I just published how we built it: **[High-throughput enterprise-scale document migration on AWS](https://aws.amazon.com/blogs/migration-and-modernization/high-throughput-enterprise-scale-document-migration-on-aws/)**. The [sample code](https://github.com/aws-samples/sample-enterprise-document-migration) is on GitHub. The blog has the full architecture and benchmarks, so I won't repeat them here. This post is about the decisions behind it.
+
+<div class="bg-white border border-border rounded-md p-4 overflow-x-auto my-6">
+  <img src="/enterprise_document_migration_architecture.png" alt="Document migration architecture: a scheduled poller Lambda launches one ECS Fargate task per pending batch; each task copies documents from the staging bucket to the document bucket and tracks batch and document state in DynamoDB" class="w-full" />
+</div>
+
+## Against the grain
+
+The conventional pattern was Lambda and SQS. I went with a plain multi-threaded Java Spring Boot app instead, running as standalone ECS tasks on Fargate. A poller Lambda launches one task per batch. Each task runs to completion and exits.
+
+**The work was steady, not spiky.** A migration this size runs at full load for weeks. Steady work is cheaper and more predictable on containers. And with tasks instead of an always-on service, you only pay for compute while documents are moving.
+
+**The limit was request rates, not compute.** S3 per-prefix limits and DynamoDB writes were the real ceiling. Three settings (thread pool, batch size, concurrency cap) plus a cap on simultaneous tasks kept us under those thresholds.
+
+**Every batch and every document is tracked.** DynamoDB records the state of each one, so any run can resume where it stopped, and the whole migration leaves an audit trail.
+
+**The trade-off:** we owned the retries, the idempotency and the thread safety ourselves. Lambda and SQS would have handed us some of that for free.
+
+The result: a single 4-vCPU task moves 1 million documents in about 4.5 hours. To go faster, run more tasks, up to the point where the downstream limits start pushing back.
+
+## Why this matters for AI
+
+Swap "documents" for "requests" and this is an inference serving problem. GPUs are fast. What decides throughput is how you batch the work and how much concurrency the slowest dependency can take. The skill that transfers isn't Java or Fargate. It's finding the real bottleneck, which is rarely the one people assume, and building the system around it so it can run unattended for weeks and pick up where it left off.
+
+I wrote this code before AI coding assistants were mainstream. Today I'd build it with an agent in the loop. The thinking about limits would stay the same.
+
+---
+
+*Architecture and code: [High-throughput enterprise-scale document migration on AWS](https://aws.amazon.com/blogs/migration-and-modernization/high-throughput-enterprise-scale-document-migration-on-aws/) · [aws-samples/sample-enterprise-document-migration](https://github.com/aws-samples/sample-enterprise-document-migration) · Previous: [The event is the prompt](/blog/event-is-the-prompt)*
