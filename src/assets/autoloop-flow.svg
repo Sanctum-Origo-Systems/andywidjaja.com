@@ -1,0 +1,49 @@
+<svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Triage -->
+  <rect x="20" y="70" width="100" height="60" rx="6" stroke="#58a6ff" stroke-width="1.5" fill="#161b22"/>
+  <text x="70" y="100" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#e6edf3" font-weight="600">Triage</text>
+  <text x="70" y="116" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8b949e">size + priority</text>
+
+  <!-- Arrow -->
+  <line x1="120" y1="100" x2="150" y2="100" stroke="#30363d" stroke-width="1.5"/>
+  <polygon points="146,96 154,100 146,104" fill="#30363d"/>
+
+  <!-- Decompose -->
+  <rect x="160" y="70" width="100" height="60" rx="6" stroke="#58a6ff" stroke-width="1.5" fill="#161b22"/>
+  <text x="210" y="100" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#e6edf3" font-weight="600">Decompose</text>
+  <text x="210" y="116" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8b949e">subtasks</text>
+
+  <!-- Arrow -->
+  <line x1="260" y1="100" x2="290" y2="100" stroke="#30363d" stroke-width="1.5"/>
+  <polygon points="286,96 294,100 286,104" fill="#30363d"/>
+
+  <!-- Implement -->
+  <rect x="300" y="70" width="100" height="60" rx="6" stroke="#58a6ff" stroke-width="1.5" fill="#161b22"/>
+  <text x="350" y="100" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#e6edf3" font-weight="600">Implement</text>
+  <text x="350" y="116" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8b949e">claude code</text>
+
+  <!-- Arrow -->
+  <line x1="400" y1="100" x2="430" y2="100" stroke="#30363d" stroke-width="1.5"/>
+  <polygon points="426,96 434,100 426,104" fill="#30363d"/>
+
+  <!-- Verify -->
+  <rect x="440" y="70" width="100" height="60" rx="6" stroke="#58a6ff" stroke-width="1.5" fill="#161b22"/>
+  <text x="490" y="100" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#e6edf3" font-weight="600">Verify</text>
+  <text x="490" y="116" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8b949e">build + test</text>
+
+  <!-- Arrow -->
+  <line x1="540" y1="100" x2="570" y2="100" stroke="#30363d" stroke-width="1.5"/>
+  <polygon points="566,96 574,100 566,104" fill="#30363d"/>
+
+  <!-- PR -->
+  <rect x="580" y="70" width="100" height="60" rx="6" stroke="#3fb950" stroke-width="1.5" fill="#161b22"/>
+  <text x="630" y="100" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#e6edf3" font-weight="600">PR</text>
+  <text x="630" y="116" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8b949e">human review</text>
+
+  <!-- Title -->
+  <text x="360" y="35" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#e6edf3" font-weight="600">Autoloop Pipeline</text>
+  <text x="360" y="55" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8b949e">issue &#x2192; implementation &#x2192; merge</text>
+
+  <!-- Protected paths note -->
+  <text x="360" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8b949e">protected paths: loop can't modify itself</text>
+</svg>

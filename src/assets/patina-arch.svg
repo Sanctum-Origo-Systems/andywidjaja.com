@@ -1,0 +1,33 @@
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Observer -->
+  <rect x="40" y="120" width="140" height="80" rx="6" stroke="#58a6ff" stroke-width="1.5" fill="#161b22"/>
+  <text x="110" y="155" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#e6edf3" font-weight="600">Observer</text>
+  <text x="110" y="175" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8b949e">belief graph</text>
+
+  <!-- Air Gap -->
+  <line x1="200" y1="160" x2="260" y2="160" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="230" y="145" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8b949e">air gap</text>
+
+  <!-- Builder -->
+  <rect x="280" y="120" width="140" height="80" rx="6" stroke="#58a6ff" stroke-width="1.5" fill="#161b22"/>
+  <text x="350" y="155" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#e6edf3" font-weight="600">Builder</text>
+  <text x="350" y="175" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8b949e">implements PRs</text>
+
+  <!-- Arrow to Human Gate -->
+  <line x1="420" y1="160" x2="500" y2="160" stroke="#30363d" stroke-width="1.5"/>
+  <polygon points="495,155 505,160 495,165" fill="#30363d"/>
+
+  <!-- Human Gate -->
+  <rect x="520" y="120" width="160" height="80" rx="6" stroke="#3fb950" stroke-width="1.5" fill="#161b22"/>
+  <text x="600" y="155" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#e6edf3" font-weight="600">Human Gate</text>
+  <text x="600" y="175" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8b949e">merge / reject</text>
+
+  <!-- Self-improvement loop arrow -->
+  <path d="M 350 200 L 350 270 L 110 270 L 110 200" stroke="#58a6ff" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+  <polygon points="106,205 110,195 114,205" fill="#58a6ff"/>
+  <text x="230" y="260" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#58a6ff">self-improvement loop</text>
+
+  <!-- Title -->
+  <text x="360" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#e6edf3" font-weight="600">Patina Architecture</text>
+  <text x="360" y="60" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8b949e">observer / builder / human gate</text>
+</svg>
