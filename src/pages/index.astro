@@ -6,6 +6,8 @@ import Footer from '../components/Footer.astro';
 import LiveStat from '../components/LiveStat.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import PortraitDecode from '../components/PortraitDecode.astro';
+import LatestChip from '../components/LatestChip.astro';
+import LatestPosts from '../components/LatestPosts.astro';
 ---
 
 <Base title="Andy Widjaja">
@@ -30,6 +32,9 @@ import PortraitDecode from '../components/PortraitDecode.astro';
       >
         LinkedIn &rarr;
       </a>
+      <div class="mt-8">
+        <LatestChip />
+      </div>
     </section>
 
     <!-- Projects -->
@@ -69,6 +74,8 @@ import PortraitDecode from '../components/PortraitDecode.astro';
           <li>&#x2022; Protected paths: loop can't modify itself</li>
         </ul>
       </ProjectCard>
+
+      <LatestPosts />
     </div>
   </main>
 
