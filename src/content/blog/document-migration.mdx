@@ -18,9 +18,9 @@ The conventional pattern was Lambda and SQS. I went with a plain multi-threaded 
 
 **The work was steady, not spiky.** A migration this size runs at full load for weeks. Steady work is cheaper and more predictable on containers. And with tasks instead of an always-on service, you only pay for compute while documents are moving.
 
-**The limit was request rates, not compute.** S3 and DynamoDB reads / writes were the real ceiling. Three settings (thread pool, batch size, concurrency cap) plus a cap on simultaneous tasks kept us below those thresholds. Going higher would lead to more back-pressure and load-related exceptions.
+**The limit was request rates, not compute.** S3 and DynamoDB reads and writes were the real ceiling. Three settings (thread pool, batch size, concurrency cap) plus a cap on simultaneous tasks kept us below those thresholds. Going higher would lead to more back-pressure and load-related exceptions.
 
-How did we handle exceptions?  **Every batch and every document is tracked.** DynamoDB records the state of each one, so any run can resume where it stopped, and the whole migration leaves an audit trail.
+How did we handle exceptions? **Every batch and every document is tracked.** DynamoDB records the state of each one, so any run can resume where it stopped, and the whole migration leaves an audit trail.
 
 **The trade-off:** we owned the retries, the idempotency and the thread safety ourselves. Lambda and SQS would have given us some of these features for free.
 
@@ -28,9 +28,9 @@ The result: a single 4-vCPU task moves 1 million documents in about 4.5 hours. T
 
 ## Why this matters for AI
 
-Swap "documents" for "requests" and this is an inference serving problem. GPUs are fast. What decides throughput is how you batch the work and how much concurrency the slowest dependency can take. The skill that transfers isn't Java or AWS services like Fargate. It's finding the real bottleneck, which is rarely the obvious one people assume, and building the system around it so it can run unattended for weeks and pick up where it was left off.
+Swap "documents" for "requests" and this is an inference serving problem. GPUs are fast. What decides throughput is how you batch the work and how much concurrency the slowest dependency can take. The skill that transfers isn't Java or AWS services like Fargate. It's finding the real bottleneck, which is rarely the obvious one, and building the system around it so it can run unattended for weeks and pick up where it left off.
 
-Back then, I wrote this code before AI coding assistants were mainstream. Today I'd build it with an agent in the loop. The thinking about limits would remain the same.
+I wrote this code before AI coding assistants were mainstream. Today I'd build it with an agent in the loop. The thinking about limits would remain the same.
 
 ---
 
