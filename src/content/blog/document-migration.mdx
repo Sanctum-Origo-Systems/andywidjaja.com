@@ -20,7 +20,7 @@ The conventional pattern was Lambda and SQS. I went with a plain multi-threaded 
 
 **The limit was request rates, not compute.** S3 and DynamoDB reads and writes were the real ceiling. Three settings (thread pool, batch size, concurrency cap) plus a cap on simultaneous tasks kept us below those thresholds. Going higher would lead to more back-pressure and load-related exceptions.
 
-How did we handle exceptions? **Every batch and every document is tracked.** DynamoDB records the state of each one, so any run can resume where it stopped, and the whole migration leaves an audit trail.
+What happens when something fails? **Every batch and every document is tracked.** DynamoDB records the state of each one, so any run can resume where it stopped, and the whole migration leaves an audit trail.
 
 **The trade-off:** we owned the retries, the idempotency and the thread safety ourselves. Lambda and SQS would have given us some of these features for free.
 
