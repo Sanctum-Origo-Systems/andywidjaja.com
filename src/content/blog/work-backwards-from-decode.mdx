@@ -98,14 +98,18 @@ In one harness, the graph made a full run about twice as fast. Nothing about the
 
 These are the runs on one test project, at the smallest depth setting, in one harness:
 
+<div class="table-wrap">
+
 | Run | What changed | Minutes | vs baseline | Score |
-|---|---|---|---|---|
+|---|---|--:|--:|--:|
 | Baseline | Strongest model, its default effort, sub-agents | 31.3 | n/a | 97 |
 | B | Lower effort on the routine steps, as a fixed workflow | 24.7 | -21% | 98 |
 | C | Same as B, on the newer model | 17.1 | -45% | 97 |
 | D | Restructured flow | 15.2 | -51% | 97 |
 | E | Same as D, run again | 18.1 | -42% | 98 |
 | F | Same as D, previous model generation | 17.4 | -44% | 97 |
+
+</div>
 
 <div class="bg-surface border border-border rounded-md p-6 overflow-x-auto my-6">
   <img src="/knob-chart-light.svg" alt="Minutes per run on one test project: Baseline 31.3, B lower effort 24.7, C newer model 17.1, D restructured 15.2, E D again 18.1, F D on the older model 17.4, with quality scores between 97 and 98" class="w-full dark:hidden" />
