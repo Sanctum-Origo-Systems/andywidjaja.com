@@ -111,6 +111,36 @@ const { title, description, date } = Astro.props;
   .dark .prose .shiki span {
     color: var(--shiki-dark);
   }
+  .prose .table-wrap {
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+  }
+  .prose table {
+    width: 100%;
+    min-width: 36rem;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+  .prose th,
+  .prose td {
+    padding: 0.625rem 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    vertical-align: top;
+  }
+  .prose th {
+    background-color: var(--color-surface);
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .prose tbody tr:last-child td {
+    border-bottom: none;
+  }
   .prose hr {
     border: none;
     border-top: 1px solid var(--color-border);
