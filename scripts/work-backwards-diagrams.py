@@ -11,10 +11,12 @@ PUBLIC = Path(__file__).resolve().parent.parent / "public"
 PALETTES = {
     "dark": dict(text="#e1e4e8", sub="#8b949e", faint="#6e7681", line="#30363d", grid="#21262d",
                  node="#0d1117", muted="#21262d", blue="#58a6ff", green="#3fb950",
-                 amber="#d29922", amber_text="#d29922"),
+                 amber="#d29922", amber_text="#d29922",
+                 purple="#bc8cff", cyan="#39c5cf", orange="#f0883e"),
     "light": dict(text="#1f2328", sub="#656d76", faint="#8c959f", line="#d0d7de", grid="#eaeef2",
                   node="#ffffff", muted="#eaeef2", blue="#0969da", green="#1a7f37",
-                  amber="#d29922", amber_text="#9a6700"),
+                  amber="#d29922", amber_text="#9a6700",
+                  purple="#8250df", cyan="#1b7c83", orange="#bc4c00"),
 }
 SANS = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 MONO = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
@@ -140,13 +142,13 @@ def app_layers(p):
     return s.render("The application layer we own")
 
 
-# Illustrative minutes, same work in both schedules: (step, phase color, batches span, graph span)
+# Illustrative minutes, same work in both schedules: (step, bar color, batches span, graph span)
 STEPS = [("research", "blue", (0, 8), (0, 8)),
-         ("main draft", "amber", (13, 23), (8, 18)),
+         ("main draft", "purple", (13, 23), (8, 18)),
          ("section A", "amber", (23, 27), (18, 22)),
          ("review", "green", (23, 31), (18, 26)),
-         ("analysis", "blue", (0, 13), (0, 13)),
-         ("section B", "amber", (23, 29), (13, 19))]
+         ("analysis", "cyan", (0, 13), (0, 13)),
+         ("section B", "orange", (23, 29), (13, 19))]
 
 
 def batches_vs_graph(p):
