@@ -1,0 +1,24 @@
+%%{init: {"theme": "base", "themeCSS": ".grid .tick line { stroke: #6e7681; opacity: 1; } .grid path { stroke-width: 0; }", "themeVariables": {"primaryTextColor": "#e1e4e8", "textColor": "#e1e4e8", "titleColor": "#e1e4e8", "sectionBkgColor": "#161b22", "altSectionBkgColor": "#1a1a2e", "sectionBkgColor2": "#161b22", "taskBkgColor": "#0c2d6b", "taskBorderColor": "#58a6ff", "taskTextColor": "#e1e4e8", "taskTextDarkColor": "#e1e4e8", "taskTextOutsideColor": "#e1e4e8", "taskTextLightColor": "#e1e4e8", "activeTaskBkgColor": "#3b2e00", "activeTaskBorderColor": "#d29922", "critBkgColor": "#033a16", "critBorderColor": "#3fb950", "gridColor": "#6e7681", "fontSize": "14px", "todayLineColor": "transparent"}, "gantt": {"titleTopMargin": 18, "barHeight": 24, "barGap": 6, "fontSize": 13, "sectionFontSize": 13, "leftPadding": 170, "topPadding": 56}}}%%
+gantt
+    title Same work, two schedules (minutes, illustrative)
+    dateFormat X
+    axisFormat %M
+    tickInterval 5minute
+
+    section Batches
+    research         :b1, 0, 8m
+    analysis         :b2, 0, 13m
+    main draft       :b3, after b2, 10m
+    doc section A    :b4, after b3, 4m
+    doc section B    :b5, after b3, 6m
+    review           :b6, after b3, 8m
+    done at 31       :milestone, after b6, 0m
+
+    section Dependency graph
+    research         :g1, 0, 8m
+    analysis         :g2, 0, 13m
+    main draft       :g3, after g1, 10m
+    doc section A    :g4, after g3, 4m
+    doc section B    :g5, after g2, 6m
+    review           :g6, after g3, 8m
+    done at 26       :milestone, after g6, 0m

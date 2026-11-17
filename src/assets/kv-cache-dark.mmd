@@ -1,4 +1,4 @@
-%%{init: {"themeVariables": {"lineColor": "#ffffff"}, "flowchart": {"wrappingWidth": 520}}}%%
+%%{init: {"theme": "base", "themeVariables": {"lineColor": "#e1e4e8", "edgeLabelBackground": "#161b22", "primaryTextColor": "#e1e4e8"}, "flowchart": {"wrappingWidth": 520}}}%%
 flowchart TB
     subgraph prefill[" "]
         direction TB
@@ -22,7 +22,7 @@ flowchart TB
         DH ~~~ cacheRow
         subgraph cacheRow[" "]
             direction LR
-            KVC["KV cache t1 .. t40K &nbsp;│ +1 │ +1 │ ... │"]
+            KVC["KV cache t1 .. t40K &nbsp;| +1 | +1 | ... |"]
             NE["one new entry per step"]
         end
         KVC ~~~ NE
@@ -31,7 +31,7 @@ flowchart TB
             T1["token 1"] --> T2["token 2"] --> T3["token 3"] --> T4["..."] --> TN["token N"]
         end
         cacheRow -->|"every step reads the weights + the whole cache"| chainRow
-        DC["(~6 to 9 ms per token, every token, in order)<br/>cost: N tokens × ITL (inter-token latency). This is the wall clock."]
+        DC["~6 to 9 ms per token, every token, in order<br/>cost: N tokens × ITL (inter-token latency). This is the wall clock."]
         chainRow ~~~ DC
     end
 
