@@ -1,0 +1,63 @@
+%%{init: {"theme": "base", "themeVariables": {"lineColor": "#1f2328", "edgeLabelBackground": "#ffffff", "primaryTextColor": "#1f2328"}, "flowchart": {"wrappingWidth": 300, "nodeSpacing": 24, "rankSpacing": 36, "padding": 10}}}%%
+flowchart LR
+    subgraph inference["AI INFERENCE · constant"]
+        direction TB
+        I1["model"]
+        I2["tokens / sec<br/>ITL"]
+        I3["KV cache"]
+        I1 ~~~ I2 ~~~ I3
+    end
+
+    subgraph harness["HARNESS · constant"]
+        direction TB
+        H1["how agents launch"]
+        H2["memory and<br/>process limits"]
+        H1 ~~~ H2
+    end
+
+    subgraph ours["BUILDING BLOCKS · ours"]
+        direction TB
+        subgraph row1[" "]
+            direction LR
+            B1["prompt<br/>instructions"]
+            B2["step graph"]
+            B3["sub-agents"]
+            B1 ~~~ B2 ~~~ B3
+        end
+        subgraph row2[" "]
+            direction LR
+            B4["script checks"]
+            B5["templates"]
+            B4 ~~~ B5
+        end
+        subgraph row3[" "]
+            direction LR
+            B6["model<br/>per role"]
+            B7["reasoning effort<br/>per step"]
+            B6 ~~~ B7
+        end
+        V["re-design · re-arrange · re-fit · re-write"]
+        row1 ~~~ row2 ~~~ row3 ~~~ V
+    end
+
+    inference --> harness --> ours
+
+    style inference fill:#eaeef2,stroke:#d0d7de,color:#656d76,stroke-width:2px
+    style harness fill:#eaeef2,stroke:#d0d7de,color:#656d76,stroke-width:2px
+    style ours fill:#f6f8fa,stroke:#0969da,color:#0969da,stroke-width:2px
+    style row1 fill:none,stroke:none
+    style row2 fill:none,stroke:none
+    style row3 fill:none,stroke:none
+    style I1 fill:#f6f8fa,stroke:#d0d7de,color:#656d76
+    style I2 fill:#f6f8fa,stroke:#d0d7de,color:#656d76
+    style I3 fill:#f6f8fa,stroke:#d0d7de,color:#656d76
+    style H1 fill:#f6f8fa,stroke:#d0d7de,color:#656d76
+    style H2 fill:#f6f8fa,stroke:#d0d7de,color:#656d76
+    style B1 fill:#ffffff,stroke:#0969da,color:#1f2328
+    style B2 fill:#ffffff,stroke:#0969da,color:#1f2328
+    style B3 fill:#ffffff,stroke:#0969da,color:#1f2328
+    style B4 fill:#ffffff,stroke:#0969da,color:#1f2328
+    style B5 fill:#ffffff,stroke:#0969da,color:#1f2328
+    style B6 fill:#ffffff,stroke:#0969da,color:#1f2328
+    style B7 fill:#ffffff,stroke:#0969da,color:#1f2328
+    style V fill:none,stroke:none,color:#0969da
